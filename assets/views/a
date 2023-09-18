@@ -1,0 +1,10 @@
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+
+export const ProjectsScreen = () => {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Projects Screen</Text>
+      </View>
+    );
+  };

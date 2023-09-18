@@ -1,0 +1,191 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, TextInput } from 'react-native';
+
+// Componentes de pantalla
+import { Header, Icon } from 'react-native-elements';
+import { HomeScreen } from '../views/HomeScreen';
+import { ProjectsScreen } from '../views/ProjectsScreen';
+import { NotificationsScreen } from '../views/NotificationsScreen'
+import { CalendarScreen } from '../views/CalendarScreen'
+
+// Componentes de encabezado
+import { SearchBar } from './SearchBar';
+
+// Navegadores
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+const Nav = () => {
+  return (
+  <View style={{display:'flex', flexDirection:'row', width:'100%'}}>
+    <Icon name="user" type="font-awesome" size={28}/> 
+    <TextInput
+          style={{ backgroundColor: 'white', borderRadius: 2,width:'100%' }}
+          placeholder="Buscar..."
+          onSubmitEditing={() => {
+            // Lógica para realizar la búsqueda
+          }}
+        />
+  </View>
+  );
+};
+
+// Pilas de navegación individuales
+const HomeStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeStackHome"
+        component={HomeScreen}
+        options={{
+          header: ({ navigation }) => (
+            <Header
+              backgroundColor="#B11830"
+              containerStyle={{ justifyContent: 'space-between', alignItems: 'center' }}
+              leftContainerStyle={{ flex: 1 }} // Esto asegura que Nav se extienda desde la izquierda
+              rightContainerStyle={{ flex: 1 }} // Esto asegura que Nav se extienda desde la derecha
+            >
+              <Nav />
+            </Header>
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+  
+
+const ProjectStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ProjectStackProject"
+        component={ProjectsScreen}
+        options={{
+          header: () => (
+            <Header
+              backgroundColor="#B11830"
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              rightComponent={<ProfileIcon />}
+              centerComponent={<SearchBar />}
+            />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const NotificationStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="NotificationStackNotification"
+        component={NotificationsScreen}
+        options={{
+          header: () => (
+            <Header
+              backgroundColor="#B11830"
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              rightComponent={<ProfileIcon />}
+              centerComponent={<SearchBar />}
+            />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const CalendarStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="CalendarStackCalendar"
+        component={CalendarScreen}
+        options={{
+          header: () => (
+            <Header
+              backgroundColor="#B11830"
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              rightComponent={<ProfileIcon />}
+              centerComponent={<SearchBar />}
+            />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// Navegador de pestañas inferior
+const BottomTabNavigator = () => {
+    return (
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          tabBarOptions={{
+            activeTintColor: '#B11830', // Color del ícono activo
+            inactiveTintColor: 'gray', // Color del ícono inactivo
+            style: {
+              backgroundColor: '#B11830', // Color de fondo del tabBar
+            },
+          }}
+        >
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="home" type="font-awesome" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Projects"
+        component={ProjectStack}
+        options={{
+          tabBarLabel: 'Projects',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="folder" type="font-awesome" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationStack}
+        options={{
+          tabBarLabel: 'Notifications',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="bell" type="font-awesome" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Calendar"
+        component={CalendarStack}
+        options={{
+          tabBarLabel: 'Calendar',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="calendar" type="font-awesome" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+// Contenedor de navegación principal
+const Navigation = () => {
+  return (
+    <NavigationContainer>
+      <BottomTabNavigator />
+    </NavigationContainer>
+  );
+};
+
+export default Navigation;
