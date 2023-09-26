@@ -1,24 +1,31 @@
 
-import React, { useState } from "react";
-import { Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
-import styles from '../../styles/styleActiveInactive';
-import stylesHead from "../../styles/stylesHead";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Button, TextInput } from 'react-native';
+import styles from '../styles/styleActiveInactive';
+import stylesHead from '../styles/stylesHead';
+import CenterProjects from '../components/projectsScreen/CenterProjects';
+import ActivosProjects from '../components/projectsScreen/ActiveProjects';
+import InactivosProjects from '../components/projectsScreen/InactiveProjects';
+import { createStackNavigator } from '@react-navigation/stack';
 import Modal from 'react-native-modal';
 
-const HeadProjects = ({ navigation }) => {
 
+const ProjectsScreen = ({ navigation }) => {
+const Stack = createStackNavigator();
 
-  const [Modal2Visible, setModal2Visible] = useState(false);
+const [Modal2Visible, setModal2Visible] = useState(false);
 
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
   };
 
+
   return (
-    <View style={stylesHead.headProjects}>
-      <Text style={stylesHead.title}>Proyectos</Text>
+    <ScrollView>
+      <View style={stylesHead.container}>
+      <View style={stylesHead.headProjects}>
       <View style={stylesHead.options}>
-        <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Detalles')}>
+        <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Tasks')}>
           <Text style={stylesHead.buttonText}>Tareas Individuales</Text>
         </TouchableOpacity>
         <TouchableOpacity style={stylesHead.addButton} onPress={toggleModal2}>
@@ -81,11 +88,13 @@ const HeadProjects = ({ navigation }) => {
         </Modal>
       </View>
     </View>
+        <CenterProjects />
+        <ActivosProjects />
+        <InactivosProjects />
+      </View>
+
+    </ScrollView>
   );
-}
+};
 
-export default HeadProjects;
-
-
-
-
+export default ProjectsScreen;

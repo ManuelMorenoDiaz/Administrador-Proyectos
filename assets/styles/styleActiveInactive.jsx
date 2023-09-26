@@ -3,89 +3,7 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  headProjects: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#A2A9B2',
-    flexDirection: 'row',
-    padding: 10,
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-  },
-  options: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    marginHorizontal: 10,
-    backgroundColor: '#B781FB',
-    borderRadius: 5,
-    height: 30,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-  },
-  buttonText: {
-    color: 'white',
-  },
-  addButton: {
-    marginHorizontal: 10,
-    backgroundColor: 'rgb(4, 255, 0)',
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 20,
-  },
-
-  centerProjects: {
-    margin: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#A2A9B2',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 20,
-  },
-  textActivos: {
-    marginHorizontal: 30,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textStyles: {
-    fontSize: 30,
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    display: 'flex',
-  },
-  textActivos1: {
-    backgroundColor: '#1ABCFE',
-    padding: 10,
-    color: 'white',
-    textAlign: 'center',
-  },
-  textActivos2: {
-    backgroundColor: '#F2841E',
-    padding: 10,
-    color: 'white',
-    textAlign: 'center',
-  },
-
+  
   activos: {
     textAlign: 'center',
     padding:20
@@ -93,7 +11,7 @@ const styles = StyleSheet.create({
   inactivos:{padding:20},
   acordeon: {
     maxWidth: '100%',
-    margin: 20,
+    margin: 5,
     backgroundColor: '#fff',
     borderRadius: 5,
     shadowColor: '#000',
@@ -104,17 +22,18 @@ const styles = StyleSheet.create({
   title:{
     fontSize: 23,
     fontWeight: 'bold',
+    textAlign:'center'
   }
   ,
   item: {
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    
   },
   flexRow: {
     backgroundColor: 'red',
   },
   activosTareas: {
-    backgroundColor: '#1ABCFE',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -123,6 +42,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 10,
   },
+  colorAP:{backgroundColor: '#1ABCFE'},
+  colorAT:{backgroundColor: '#B781FB'},
   optionesTareasAct: {
     display: 'flex',
     justifyContent: 'center',
@@ -179,17 +100,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contenido: {
-    maxHeight: 1000,
+    maxHeight: 'auto',
     overflow: 'hidden',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
   contDescripcion: {
-    width: '80%',
+    marginTop:20,
+    width: '100%',
     flexDirection: 'column',
   },
   h3: {
+    fontSize:20,
     borderWidth: 0.5,
     textAlign: 'center',
     borderColor: 'rgba(0, 0, 0, 0.333)',
@@ -197,11 +120,17 @@ const styles = StyleSheet.create({
   p: {
     borderWidth: 0.3,
     borderColor: 'rgb(0, 0, 0)',
-    height: 70,
+    height: 'auto',
+    margin:20,
+    padding:10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 2,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
   },
   conTareas: {
     width: '80%',

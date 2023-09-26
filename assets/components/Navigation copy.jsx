@@ -1,6 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../views/HomeScreen';
 import ProjectsScreen from '../views/ProjectsScreen';
@@ -9,28 +8,15 @@ import CalendarScreen from '../views/CalendarScreen';
 import TaskScreen from '../views/TaskScreen';
 
 import { Icon } from 'react-native-elements';
-
-
-const Stack = createStackNavigator();
-
-function HomeStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Projects" component={ProjectsScreen} />
-      <Stack.Screen name="Tasks" component={TaskScreen} />
-    </Stack.Navigator>
-  );
-}
-
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 function Navigation() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Navigator >
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={TaskScreen}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({ color, size }) => (
@@ -40,7 +26,7 @@ function Navigation() {
         />
         <Tab.Screen
           name="Projects"
-          component={HomeStack}
+          component={ProjectsScreen}
           options={{
             tabBarLabel: 'Projects',
             tabBarIcon: ({ color, size }) => (

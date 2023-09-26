@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Button, TextInput } from "react-native";
-import styles from "../../../styles/stylesScreenProjects";
+import styles from "../../../styles/styleActiveInactive";
 import Modal from "react-native-modal";
 import { Icon } from "react-native-elements";
 

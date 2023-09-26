@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity} from 'react-native';
 import styles from '../../styles/styleActiveInactive'
 import { Icon } from 'react-native-elements';
 
-const InactivosProjects = () => {
+const InactiveTasks = () => {
     const [activeState, setActiveState] = useState({
         activo1: false,
         activo2: false,
@@ -45,21 +45,6 @@ const InactivosProjects = () => {
                       eveniet doloribus, beatae soluta!
                     </Text>
                   </View>
-                  <View style={styles.conTareas}>
-                    <Text style={styles.h3}>Tareas</Text>
-                    <View style={styles.tarea}>
-                      <View style={styles.tareaLeft}>
-                        <Text style={styles.h4}>Validación del diseño de la app</Text>
-                        <Text>Oscar Alfredo Diaz</Text>
-                      </View>
-                    </View>
-                    <View style={styles.tarea}>
-                      <View style={styles.tareaLeft}>
-                        <Text style={styles.h4}>Validación del diseño de la app</Text>
-                        <Text>Oscar Alfredo Diaz</Text>
-                      </View>
-                    </View>
-                  </View>
                 </View>
               )}
             </View>
@@ -88,21 +73,7 @@ const InactivosProjects = () => {
                       eveniet doloribus, beatae soluta!
                     </Text>
                   </View>
-                  <View style={styles.conTareas}>
-                    <Text style={styles.h3}>Tareas</Text>
-                    <View style={styles.tarea}>
-                      <View style={styles.tareaLeft}>
-                        <Text style={styles.h4}>Validación del diseño de la app</Text>
-                        <Text>Oscar Alfredo Diaz</Text>
-                      </View>
-                    </View>
-                    <View style={styles.tarea}>
-                      <View style={styles.tareaLeft}>
-                        <Text style={styles.h4}>Validación del diseño de la app</Text>
-                        <Text>Oscar Alfredo Diaz</Text>
-                      </View>
-                    </View>
-                  </View>
+                  
                 </View>
               )}
             </View>
@@ -112,7 +83,7 @@ const InactivosProjects = () => {
     )
 }
 
-export default InactivosProjects
+export default InactiveTasks
 
 
 

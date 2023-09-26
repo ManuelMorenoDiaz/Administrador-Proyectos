@@ -3,12 +3,10 @@ import { View, Text, TouchableOpacity, Button, TextInput } from "react-native";
 import styles from "../../styles/styleActiveInactive";
 import Modal from "react-native-modal";
 import { Icon } from "react-native-elements";
-import CrearTarea from "./modals/CreateTask";
-import EditarProyecto from "./modals/EditProject";
-import Tarea from "./Task";
+import EditarProyecto from "./modals/EditTask";
 import Compartir from "./modals/Share";
 
-const Proyecto = () => {
+const Task = () => {
     const [activeState, setActiveState] = useState({
         activo1: false,
         activo2: false,
@@ -29,7 +27,7 @@ const Proyecto = () => {
             <View style={styles.item}>
                 <TouchableOpacity onPress={() => toggleAccordion("activo1")}>
                     <View style={styles.flexRow}>
-                        <View style={[styles.activosTareas, styles.colorAP]}>
+                        <View style={[styles.activosTareas, , styles.colorAT]}>
                             <Text
                                 style={{
                                     color: "white",
@@ -65,7 +63,6 @@ const Proyecto = () => {
                     >
                         <View style={styles.modalOpciones}>
                             <EditarProyecto />
-                            <CrearTarea />
                             <Compartir />
                             <TouchableOpacity
                                 style={{
@@ -82,7 +79,7 @@ const Proyecto = () => {
                                     style={{ marginRight: 10 }}
                                     color="black"
                                 />
-                                <Text>Eliminar Proyecto</Text>
+                                <Text>Eliminar Tarea</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
@@ -99,7 +96,7 @@ const Proyecto = () => {
                                     style={{ marginRight: 10 }}
                                     color="black"
                                 />
-                                <Text>Terminar Proyecto</Text>
+                                <Text>Terminar Tarea</Text>
                             </TouchableOpacity>
                         </View>
                     </Modal>
@@ -116,24 +113,10 @@ const Proyecto = () => {
                                 reiciendis eius eveniet doloribus, beatae soluta!
                             </Text>
                         </View>
-                        <View style={styles.conTareas}>
-                            <Text style={styles.h3}>Por Hacer</Text>
-                            <Tarea />
-                            <Tarea />
-                            <Tarea />
-                        </View>
-                        <View style={styles.conTareas}>
-                            <Text style={styles.h3}>En proceso</Text>
-                            <Tarea />
-                        </View>
-                        <View style={styles.conTareas}>
-                            <Text style={styles.h3}>Hecho</Text>
-                            <Tarea />
-                        </View>
                     </View>
                 )}
             </View>
     );
 }
 
-export default Proyecto;
+export default Task;

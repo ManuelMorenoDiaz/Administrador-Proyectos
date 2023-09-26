@@ -4,8 +4,9 @@ import { Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
 import styles from '../../styles/styleActiveInactive';
 import stylesHead from "../../styles/stylesHead";
 import Modal from 'react-native-modal';
+import { Icon } from 'react-native-elements';
 
-const HeadProjects = ({ navigation }) => {
+const HeadTasks = () => {
 
 
   const [Modal2Visible, setModal2Visible] = useState(false);
@@ -16,11 +17,8 @@ const HeadProjects = ({ navigation }) => {
 
   return (
     <View style={stylesHead.headProjects}>
-      <Text style={stylesHead.title}>Proyectos</Text>
+    
       <View style={stylesHead.options}>
-        <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Detalles')}>
-          <Text style={stylesHead.buttonText}>Tareas Individuales</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={stylesHead.addButton} onPress={toggleModal2}>
           <Text style={stylesHead.addButtonText}>+</Text>
         </TouchableOpacity>
@@ -33,7 +31,7 @@ const HeadProjects = ({ navigation }) => {
           style={{ justifyContent: "center", alignItems: "center", margin: 0 }}
         >
           <View style={{ width: '80%', backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
-            <Text style={{ color: 'blue', fontWeight: 'bold', fontSize: 20, margin: 10 }}>Crear Proyecto</Text>
+            <Text style={{ color: 'blue', fontWeight: 'bold', fontSize: 20, margin: 10 }}>Crear Tarea</Text>
             <View style={styles.opcionesInput}>
               <Text style={styles.textInput}>Titulo</Text>
               <TextInput
@@ -46,17 +44,7 @@ const HeadProjects = ({ navigation }) => {
             </View>
 
             <View style={styles.opcionesInput}>
-              <Text style={styles.textInput}>Fecha Inicio</Text>
-              <TextInput
-                placeholder="Ingrese el título"
-                onChangeText={(text) => {
-                  // Manejar el texto ingresado en el campo de título
-                }}
-                style={styles.input}
-              />
-            </View>
-            <View style={styles.opcionesInput}>
-              <Text style={styles.textInput}>Fecha Finalización</Text>
+              <Text style={styles.textInput}>Fecha</Text>
               <TextInput
                 placeholder="Ingrese el título"
                 onChangeText={(text) => {
@@ -84,7 +72,7 @@ const HeadProjects = ({ navigation }) => {
   );
 }
 
-export default HeadProjects;
+export default HeadTasks;
 
 
 
