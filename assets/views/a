@@ -8,3 +8,61 @@ export const ProjectsScreen = () => {
       </View>
     );
   };
+
+
+
+
+
+
+  const eventos = [
+    {
+      title: 'Tarea 1',
+      start: '2023-10-01',
+      end: '2023-10-01',
+      allDay: false,
+      description: 'Descripción de la tarea 1',
+      color: '#B781FB',
+      textColor: 'white',
+      id: 1,
+      type: 'task',
+    },
+    {
+      title: 'Tarea 2',
+      start: '2023-10-05',
+      end: '2023-10-05',
+      allDay: true,
+      description: 'Descripción de la tarea 2',
+      color: 'green',
+      textColor: 'black',
+      id: 2,
+      type: 'task',
+    },
+    {
+      title: 'Proyecto 1',
+      start: '2023-10-05',
+      end: '2023-10-05',
+      allDay: true,
+      description: 'Descripción del proyecto 1',
+      color: 'red',
+      textColor: 'black',
+      id: 3,
+      type: 'project',
+    },
+    {
+      title: 'Proyecto 2',
+      start: '2023-10-07',
+      end: '2023-10-07',
+      allDay: true,
+      description: 'Descripción del proyecto 2',
+      color: '#1ABCFE',
+      textColor: 'black',
+      id: 4,
+      type: 'project',
+    },
+  ];
+
+
+
+
+
+

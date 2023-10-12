@@ -32,17 +32,17 @@ function Navigation() {
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarLabel: 'Home',
+            tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (
               <Icon name="home" type="font-awesome" color={'#AEAEAE'} size={size} />
             ),
           }}
         />
         <Tab.Screen
-          name="Projects"
+          name="Projectos"
           component={HomeStack}
           options={{
-            tabBarLabel: 'Projects',
+            tabBarLabel: 'Projectos',
             tabBarIcon: ({ color, size }) => (
               <Icon name="folder" type="font-awesome" color={'#AEAEAE'} size={size} />
             ),
@@ -52,7 +52,7 @@ function Navigation() {
           name="Notifications"
           component={NotificationsScreen}
           options={{
-            tabBarLabel: 'Notifications',
+            tabBarLabel: 'Notificationes',
             tabBarIcon: ({ color, size }) => (
               <Icon name="bell" type="font-awesome" color={'#AEAEAE'} size={size} />
             ),
@@ -62,7 +62,7 @@ function Navigation() {
           name="Calendar"
           component={CalendarScreen}
           options={{
-            tabBarLabel: 'Calendar',
+            tabBarLabel: 'Calendario',
             tabBarIcon: ({ color, size }) => (
               <Icon name="calendar" type="font-awesome" color={'#AEAEAE'} size={size} />
             ),

@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+
 
  const NotificationsScreen = () => {
     return (
@@ -8,5 +11,7 @@ import { View, Text } from 'react-native';
       </View>
     );
   };
+
+ 
 
   export default NotificationsScreen;

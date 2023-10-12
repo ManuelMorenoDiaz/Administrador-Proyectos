@@ -5,8 +5,16 @@ import Modal from "react-native-modal";
 import { Icon } from "react-native-elements";
 import EditarProyecto from "./modals/EditTask";
 import Compartir from "./modals/Share";
+import CustomAlertModal from "../Alerts";
+import { useModalFunctions } from "../Functions-Alerts"; 
 
 const Task = () => {
+    const {
+        errorModalVisible, infoModalVisible,successModalVisible,questionModalVisible,
+        showErrorAlert, showInfoAlert, showSuccessAlert,showQuestionAlert,
+        closeErrorAlert, closeInfoAlert, closeSuccessAlert,closeQuestionAlert,
+    } = useModalFunctions();
+
     const [activeState, setActiveState] = useState({
         activo1: false,
         activo2: false,
@@ -72,6 +80,8 @@ const Task = () => {
                                     alignItems: "center",
                                     border: "2px solid red",
                                 }}
+                                onPress={showQuestionAlert}
+
                             >
                                 <Icon
                                     name="delete"
@@ -81,6 +91,12 @@ const Task = () => {
                                 />
                                 <Text>Eliminar Tarea</Text>
                             </TouchableOpacity>
+                            <CustomAlertModal
+                                isVisible={questionModalVisible}
+                                type="question"
+                                message="¿Estás seguro?"
+                                onClose={closeQuestionAlert}
+                            />
                             <TouchableOpacity
                                 style={{
                                     display: "flex",
@@ -89,6 +105,7 @@ const Task = () => {
                                     alignItems: "center",
                                     border: "2px solid red",
                                 }}
+                                onPress={showInfoAlert}
                             >
                                 <Icon
                                     name="check"
@@ -98,6 +115,12 @@ const Task = () => {
                                 />
                                 <Text>Terminar Tarea</Text>
                             </TouchableOpacity>
+                            <CustomAlertModal
+                                isVisible={infoModalVisible}
+                                type="info"
+                                message="La Tarea se terminara definitivamente"
+                                onClose={closeInfoAlert}
+                            />
                         </View>
                     </Modal>
                 </TouchableOpacity>

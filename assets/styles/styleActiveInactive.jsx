@@ -5,7 +5,6 @@ import {
 const styles = StyleSheet.create({
   
   activos: {
-    textAlign: 'center',
     padding:20
   },
   inactivos:{padding:20},
@@ -22,7 +21,6 @@ const styles = StyleSheet.create({
   title:{
     fontSize: 23,
     fontWeight: 'bold',
-    textAlign:'center'
   }
   ,
   item: {
@@ -147,11 +145,9 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   tareaLeft: {
-    textAlign: 'start',
     color: '#2229C9',
   },
   h4: {
-    textAlign: 'start',
     color: '#2229C9',
   },
 });

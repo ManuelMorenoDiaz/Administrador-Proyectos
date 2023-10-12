@@ -1,11 +1,10 @@
-import React, { useState } from "react";
 import Navigation from './assets/components/Navigation'
 
-const App = () => {
+function App() {
 
   return (
     <Navigation />
   );
-};
+}
 
 export default App;

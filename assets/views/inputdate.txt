@@ -1,3 +1,103 @@
+import React, { useState, useRef } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Modal } from 'react-native';
+import DatePicker from 'react-native-modern-datepicker';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Debes importar el icono que desees usar
+
+export default function App() {
+  const [date, setDate] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const dateTextInputRef = useRef();
+
+  const openDatePicker = () => {
+    setModalVisible(true);
+  };
+
+  const clearDate = () => {
+    setDate('');
+    dateTextInputRef.current.clear();
+  };
+
+  return (
+    <View style={stylesI.container}>
+      <View style={stylesI.dateInputContainer}>
+        <TextInput
+          ref={dateTextInputRef}
+          value={date}
+          style={stylesI.dateInput}
+          placeholder="Selecciona una fecha"
+        />
+        <TouchableOpacity style={stylesI.iconContainer} onPress={openDatePicker}>
+          <Icon name="calendar" size={20} color="blue" />{/* Icono de calendario */}
+        </TouchableOpacity>
+        <TouchableOpacity style={stylesI.iconContainer} onPress={clearDate}>
+          <Icon name="times" size={20} color="red" />{/* Icono de borrar */}
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={stylesI.modalContainer}>
+          <DatePicker
+            options={{
+              mainColor: '#f0f0f0',
+              textColor: 'black',
+              textHeaderColor: 'black',
+              borderColor: 'rgba(122, 146, 165, 0.1)',
+            }}
+            onSelectedChange={(selectedDate) => {
+              setDate(selectedDate);
+              setModalVisible(false);
+            }}
+            current={date || '2023-10-10'}
+            selected={date}
+            mode="calendar"
+          />
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+const stylesI = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 10,
+  },
+  dateInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  dateInput: {
+    flex: 1,
+  },
+  iconContainer: {
+    padding: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+});
+
+
+
+
+
+
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Button, TextInput, StyleSheet } from 'react-native';
 import styles from '../styles/styleActiveInactive';
@@ -14,6 +114,22 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 
 const ProjectsScreen = ({ navigation }) => {
+  const [proyectos, setProyectos] = useState([]);
+
+  useEffect(() => {
+  // Realiza la solicitud a la API y actualiza el estado 'proyectos'
+      fetch('http://localhost:3000/api/projects')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener los proyectos:', error);
+      });
+
+    
+}, []);
+
 
   const {
     errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
@@ -71,7 +187,6 @@ const ProjectsScreen = ({ navigation }) => {
   return (
     <ScrollView>
       <View style={stylesHead.container}>
-
         <View style={stylesHead.headProjects}>
           <View style={stylesHead.options}>
             <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Tasks')}>
@@ -248,8 +363,8 @@ const ProjectsScreen = ({ navigation }) => {
           onClose={closeSuccessAlert}
         />
         <CenterProjects />
-        <ActivosProjects  />
-        <InactivosProjects  />
+        <ActivosProjects proyectos={proyectos.filter(proyecto => proyecto.estatus === 'Activo')} />
+        <InactivosProjects proyectos={proyectos.filter(proyecto => proyecto.estatus === 'Inactivo')} />
       </View>
     </ScrollView>
   );

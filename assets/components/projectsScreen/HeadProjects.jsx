@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, Button, TextInput } from 'react-native';
 import styles from '../../styles/styleActiveInactive';
@@ -6,20 +5,22 @@ import stylesHead from "../../styles/stylesHead";
 import Modal from 'react-native-modal';
 
 const HeadProjects = ({ navigation }) => {
-
-
   const [Modal2Visible, setModal2Visible] = useState(false);
+
 
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
   };
+
+
+ 
 
   return (
     <View style={stylesHead.headProjects}>
       <Text style={stylesHead.title}>Proyectos</Text>
       <View style={stylesHead.options}>
         <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Detalles')}>
-          <Text style={stylesHead.buttonText}>Tareas Individuales</Text>
+          <Text style={stylesHead.buttonText}>Tareas</Text>
         </TouchableOpacity>
         <TouchableOpacity style={stylesHead.addButton} onPress={toggleModal2}>
           <Text style={stylesHead.addButtonText}>+</Text>
@@ -39,7 +40,7 @@ const HeadProjects = ({ navigation }) => {
               <TextInput
                 placeholder="Ingrese el título"
                 onChangeText={(text) => {
-                  // Manejar el texto ingresado en el campo de título
+                  // Handle the text entered in the title field
                 }}
                 style={styles.input}
               />
@@ -48,34 +49,33 @@ const HeadProjects = ({ navigation }) => {
             <View style={styles.opcionesInput}>
               <Text style={styles.textInput}>Fecha Inicio</Text>
               <TextInput
-                placeholder="Ingrese el título"
-                onChangeText={(text) => {
-                  // Manejar el texto ingresado en el campo de título
-                }}
+                placeholder="Seleccione la Fecha Inicio"
+                value={startDate}
                 style={styles.input}
+                editable={false} // Make it not editable manually
               />
             </View>
+
             <View style={styles.opcionesInput}>
               <Text style={styles.textInput}>Fecha Finalización</Text>
               <TextInput
-                placeholder="Ingrese el título"
-                onChangeText={(text) => {
-                  // Manejar el texto ingresado en el campo de título
-                }}
+                placeholder="Seleccione la Fecha Finalización"
                 style={styles.input}
+                editable={false} // Make it not editable manually
               />
+
             </View>
+
             <View style={styles.opcionesInput}>
               <Text style={styles.textInput}>Descripción</Text>
               <TextInput
                 placeholder="Ingrese la descripción"
                 onChangeText={(text) => {
-                  // Manejar el texto ingresado en el campo de descripción
+                  // Handle the text entered in the description field
                 }}
                 style={styles.input}
               />
-              <Button title="Guardar" />
-
+              <Button title="Guardar" onPress={toggleModal2} />
             </View>
           </View>
         </Modal>
@@ -85,7 +85,3 @@ const HeadProjects = ({ navigation }) => {
 }
 
 export default HeadProjects;
-
-
-
-
