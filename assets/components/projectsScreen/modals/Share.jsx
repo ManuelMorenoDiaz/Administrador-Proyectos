@@ -15,8 +15,7 @@ const Compartir = () => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "start",
-                alignItems: "center",
-                border: "2px solid red",
+                alignItems: "center"
             }}
             onPress={mostrarMCompartir}
         >

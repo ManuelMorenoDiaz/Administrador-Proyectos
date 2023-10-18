@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Button, TextInput, StyleSheet } from 'react-native';
 import styles from '../styles/styleActiveInactive';
 import stylesHead from '../styles/stylesHead';
@@ -13,7 +13,19 @@ import DatePicker from 'react-native-modern-datepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 
+
 const ProjectsScreen = ({ navigation }) => {
+  const [Modal2Visible, setModal2Visible] = useState(false);
+  const [titulo, setTitulo] = useState('');
+  const [fechaInicio, setFechaInicio] = useState('');
+  const [fechaFinalizacion, setFechaFinalizacion] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [dateInicio, setDateInicio] = useState('');
+  const [dateFinalizacion, setDateFinalizacion] = useState('');
+  const dateTextInputRefInicio = useRef();
+  const dateTextInputRefFinalizacion = useRef();
+  const [modalVisibleInicio, setModalVisibleInicio] = useState(false);
+  const [modalVisibleFinalizacion, setModalVisibleFinalizacion] = useState(false);
 
   const {
     errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
@@ -21,34 +33,10 @@ const ProjectsScreen = ({ navigation }) => {
     closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
   } = useModalFunctions();
 
-  const Stack = createStackNavigator();
-
-  const [Modal2Visible, setModal2Visible] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [fechaInicio, setFechaInicio] = useState(""); // Estado para fecha de inicio
-  const [fechaFinalizacion, setFechaFinalizacion] = useState(""); // Estado para fecha de finalización
-  const [descripcion, setDescripcion] = useState("");
-
-  const [dateInicio, setDateInicio] = useState(''); // Estado para la fecha de inicio
-  const [dateFinalizacion, setDateFinalizacion] = useState(''); // Estado para la fecha de finalización
-
+  
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
   };
-
-  const guardarProyecto = () => {
-    console.log("Título: ", titulo);
-    console.log("Fecha Inicio: ", fechaInicio);
-    console.log("Fecha Finalización: ", fechaFinalizacion);
-    console.log("Descripción: ", descripcion);
-    toggleModal2();
-    showSuccessAlert();
-  };
-
-  const [modalVisibleInicio, setModalVisibleInicio] = useState(false);
-  const [modalVisibleFinalizacion, setModalVisibleFinalizacion] = useState(false);
-  const dateTextInputRefInicio = useRef();
-  const dateTextInputRefFinalizacion = useRef();
 
   const openDatePickerInicio = () => {
     setModalVisibleInicio(true);
@@ -68,10 +56,44 @@ const ProjectsScreen = ({ navigation }) => {
     dateTextInputRefFinalizacion.current.clear();
   };
 
+  const guardarProyecto = () => {
+    // Crear el objeto del proyecto a enviar a la API
+    const proyecto = {
+      titulo,
+      fecha_inicio: fechaInicio,
+      fecha_fin: fechaFinalizacion,
+      descripcion,
+    };
+
+    // Realizar la solicitud POST a la API (Asegúrate de configurar la URL correcta)
+    axios
+      .post('http://localhost:3000/api/projects/', proyecto)
+      .then((response) => {
+        if (response.status === 200) {
+          // Proyecto creado con éxito, puedes agregar manejo de éxito aquí
+          console.log('Proyecto creado con éxito:', response.data);
+          showSuccessAlert();
+          // Limpiar los campos después de la creación
+          setTitulo('');
+          setFechaInicio('');
+          setFechaFinalizacion('');
+          setDescripcion('');
+          toggleModal2();
+        }
+      })
+      .catch((error) => {
+        // Manejo de errores en caso de que la creación falle
+        console.error('Error al crear el proyecto:', error);
+        // Puedes mostrar una alerta de error aquí
+        showErrorAlert();
+      });
+  };
+
+  // Resto del código de tu componente ...
+
   return (
     <ScrollView>
       <View style={stylesHead.container}>
-
         <View style={stylesHead.headProjects}>
           <View style={stylesHead.options}>
             <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Tasks')}>
@@ -117,30 +139,34 @@ const ProjectsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                   <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={modalVisibleInicio}
-                    onRequestClose={() => setModalVisibleInicio(false)}
-                  >
+                      animationType="slide"
+                      transparent={false}
+                      visible={modalVisibleInicio}
+                      onRequestClose={() => setModalVisibleInicio(false)}
+                      style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+                    >
                     <View
                       style={{
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        width: '100%',
+                          height: '100%',
                       }}
                     >
                       <View
                         style={{
                           width: '80%',
-                          backgroundColor: 'white',
+                          height: '80%',
+                          backgroundColor: 'red',
                           borderRadius: 10,
-                          padding: 20,
                           shadowColor: 'black',
                           shadowOffset: { width: 0, height: 2 },
                           shadowOpacity: 0.25,
                           shadowRadius: 3.84,
                           elevation: 5,
+                          backgroundColor: 'lightgray',
                         }}
                       >
                         <DatePicker
@@ -158,6 +184,11 @@ const ProjectsScreen = ({ navigation }) => {
                           current={dateInicio || '2023-10-10'}
                           selected={dateInicio}
                           mode="calendar"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: 10,
+                          }}
                         />
                       </View>
                     </View>
@@ -248,8 +279,8 @@ const ProjectsScreen = ({ navigation }) => {
           onClose={closeSuccessAlert}
         />
         <CenterProjects />
-        <ActivosProjects  />
-        <InactivosProjects  />
+        <ActivosProjects />
+        <InactivosProjects />
       </View>
     </ScrollView>
   );
@@ -270,9 +301,11 @@ const stylesI = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 10,
     backgroundColor: '#fff',
+    width: '100%',
   },
   dateInput: {
     flex: 1,
+    padding: 10,
   },
   iconContainer: {
     padding: 10,

@@ -16,7 +16,6 @@ const CrearTarea = () => {
                 flexDirection: "row",
                 justifyContent: "start",
                 alignItems: "center",
-                border: "2px solid red",
             }}
             onPress={mostrarMCrearTarea}
         >
