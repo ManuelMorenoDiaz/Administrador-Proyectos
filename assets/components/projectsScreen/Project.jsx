@@ -16,24 +16,38 @@ import { Platform } from 'react-native';
 const Proyecto = () => {
   
   const [data, setData] = useState([]);
+  const [dataTask, setDataTask] = useState([]);
+
   let baseURL;
 
   if (Platform.OS === 'web') {
     // En web, usa localhost
     baseURL = 'http://localhost:3000';
   } else {
-    // En Android o iOS, usa 10.0.2.2 para emulador Android
-    // y la dirección del servidor en producción
     baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
   }
 
   const URL = `${baseURL}/api/projects`;
+  const URLTask = `${baseURL}/api/dependent_tasks/`;
 
   useEffect(() => {
     axios.get(URL)
       .then(response => {
         if (response.status === 200) {
           setData(response.data);
+          console.log(response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la solicitud:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get(URLTask)
+      .then(response => {
+        if (response.status === 200) {
+          setDataTask(response.data);
           console.log(response.data);
         }
       })
@@ -76,8 +90,31 @@ const Proyecto = () => {
       });
   };
 
-  // Filtrar solo los proyectos con estatus "Activo"
+  // Organizar las tareas por proyecto y estado
   const proyectosActivos = data.filter(project => project.estatus === "Activo");
+
+  const tareasPorProyecto = {};
+
+  proyectosActivos.forEach(project => {
+    if (!tareasPorProyecto[project._id]) {
+      tareasPorProyecto[project._id] = {
+        projectData: project,
+        tareas: {
+          "Por hacer": [],
+          "En progreso": [],
+          "Hecho": [],
+        },
+      };
+    }
+  });
+
+  dataTask.forEach(task => {
+    const proyectoId = task.proyecto_id;
+    const estado = task.estatus;
+    if (tareasPorProyecto[proyectoId] && tareasPorProyecto[proyectoId].tareas[estado]) {
+      tareasPorProyecto[proyectoId].tareas[estado].push(task);
+    }
+  });
 
   return (
     <View>
@@ -86,6 +123,7 @@ const Proyecto = () => {
           <View>
             <TouchableOpacity onPress={() => toggleAccordion(`activo${index}`)}>
               <View style={styles.flexRow}>
+                {/* Renderizar el título del proyecto */}
                 <View style={[styles.activosTareas, styles.colorAP]}>
                   <Text
                     style={{
@@ -126,23 +164,23 @@ const Proyecto = () => {
                 <CrearTarea />
                 <Compartir />
                 <TouchableOpacity
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
-                      alignItems: "center",
-                      border: "2px solid red",
-                    }}
-                    onPress={() => eliminarProyecto(project._id)}
-                  >
-                    <Icon
-                      name="delete"
-                      size={20}
-                      style={{ marginRight: 10 }}
-                      color="black"
-                    />
-                    <Text>Eliminar Proyecto</Text>
-                  </TouchableOpacity>
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "start",
+                    alignItems: "center",
+                    border: "2px solid red",
+                  }}
+                  onPress={() => eliminarProyecto(project._id)}
+                >
+                  <Icon
+                    name="delete"
+                    size={20}
+                    style={{ marginRight: 10 }}
+                    color="black"
+                  />
+                  <Text>Eliminar Proyecto</Text>
+                </TouchableOpacity>
                 <CustomAlertModal
                   isVisible={questionModalVisible}
                   type="question"
@@ -177,26 +215,22 @@ const Proyecto = () => {
             </Modal>
             {activeState[`activo${index}`] && (
               <View style={styles.contenido}>
+                {/* Renderizar la descripción del proyecto */}
                 <View style={styles.contDescripcion}>
                   <Text style={styles.h3}>Descripción</Text>
                   <Text style={styles.p}>
                     {project.descripcion}
                   </Text>
                 </View>
-                <View style={styles.conTareas}>
-                  <Text style={styles.h3}>Por Hacer</Text>
-                  <Tarea />
-                  <Tarea />
-                  <Tarea />
-                </View>
-                <View style={styles.conTareas}>
-                  <Text style={styles.h3}>En proceso</Text>
-                  <Tarea />
-                </View>
-                <View style={styles.conTareas}>
-                  <Text style={styles.h3}>Hecho</Text>
-                  <Tarea />
-                </View>
+                {/* Renderizar las tareas por estado */}
+                {Object.entries(tareasPorProyecto[project._id].tareas).map(([estado, tareas]) => (
+                  <View key={estado} style={styles.conTareas}>
+                    <Text style={styles.h3}>{estado}</Text>
+                    {tareas.map(task => (
+                      <Tarea key={task._id} task={task} />
+                    ))}
+                  </View>
+                ))}
               </View>
             )}
           </View>
