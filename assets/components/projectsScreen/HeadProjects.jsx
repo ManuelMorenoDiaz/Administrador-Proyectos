@@ -12,9 +12,6 @@ const HeadProjects = ({ navigation }) => {
     setModal2Visible(!Modal2Visible);
   };
 
-
- 
-
   return (
     <View style={stylesHead.headProjects}>
       <Text style={stylesHead.title}>Proyectos</Text>

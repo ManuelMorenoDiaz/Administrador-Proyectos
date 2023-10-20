@@ -90,6 +90,25 @@ const Proyecto = () => {
       });
   };
 
+
+  const terminarProyecto = (projectId) => {
+    showQuestionAlert();
+    axios.put(`${URL}/${projectId}`, { estatus: "Inactivo" }) // Realiza una solicitud PUT al servidor para actualizar el estado del proyecto
+      .then(response => {
+        if (response.status === 200) {
+          // Actualiza el estado localmente para reflejar el cambio
+          const proyectoIndex = proyectosActivos.findIndex(project => project._id === projectId);
+          if (proyectoIndex !== -1) {
+            proyectosActivos[proyectoIndex].estatus = "Inactivo";
+          }
+          showSuccessAlert();
+        }
+      })
+      .catch(error => {
+        console.error('Error al terminar el proyecto:', error);
+      });
+  };
+
   // Organizar las tareas por proyecto y estado
   const proyectosActivos = data.filter(project => project.estatus === "Activo");
 
@@ -160,8 +179,8 @@ const Proyecto = () => {
               }}
             >
               <View style={styles.modalOpciones}>
-                <EditarProyecto />
-                <CrearTarea />
+                <EditarProyecto idProyecto={project._id}/>
+                <CrearTarea idProyecto={project._id}/>
                 <Compartir />
                 <TouchableOpacity
                   style={{
@@ -195,7 +214,7 @@ const Proyecto = () => {
                     alignItems: "center",
                     border: "2px solid red",
                   }}
-                  onPress={showInfoAlert}
+                  onPress={() => terminarProyecto(project._id)}
                 >
                   <Icon
                     name="check"

@@ -20,6 +20,7 @@ const ProjectsScreen = ({ navigation }) => {
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFinalizacion, setFechaFinalizacion] = useState('');
   const [descripcion, setDescripcion] = useState('');
+
   const [dateInicio, setDateInicio] = useState('');
   const [dateFinalizacion, setDateFinalizacion] = useState('');
   const dateTextInputRefInicio = useRef();
@@ -89,7 +90,7 @@ const ProjectsScreen = ({ navigation }) => {
       });
   };
 
-  // Resto del código de tu componente ...
+
 
   return (
     <ScrollView>
