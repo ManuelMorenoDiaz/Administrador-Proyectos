@@ -159,7 +159,7 @@ const ProjectsScreen = ({ navigation }) => {
                       <View
                         style={{
                           width: '80%',
-                          height: '80%',
+                          height: 'auto',
                           backgroundColor: 'red',
                           borderRadius: 10,
                           shadowColor: 'black',
@@ -187,7 +187,7 @@ const ProjectsScreen = ({ navigation }) => {
                           mode="calendar"
                           style={{
                             width: '100%',
-                            height: '100%',
+                            height: 'auto',
                             borderRadius: 10,
                           }}
                         />
@@ -228,6 +228,7 @@ const ProjectsScreen = ({ navigation }) => {
                       <View
                         style={{
                           width: '80%',
+                          height: 'auto',
                           backgroundColor: 'white',
                           borderRadius: 10,
                           padding: 20,
@@ -252,7 +253,11 @@ const ProjectsScreen = ({ navigation }) => {
                           }}
                           current={dateFinalizacion || '2023-10-10'}
                           selected={dateFinalizacion}
-                          mode="calendar"
+                          mode="calendar"heightstyle={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 10,
+                          }}
                         />
                       </View>
                     </View>

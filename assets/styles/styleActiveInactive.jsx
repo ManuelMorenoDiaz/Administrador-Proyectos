@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   inactivos:{padding:20},
   acordeon: {
     maxWidth: '100%',
-    margin: 5,
+    margin: 0,
     backgroundColor: '#fff',
     borderRadius: 5,
     shadowColor: '#000',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   modalOpciones: {
     backgroundColor: 'white',
     height: 'auto',
-    width: 200,
+    width: '100%',
     display: 'flex',
     justifyContent: 'space-around',
     borderRadius: 10,

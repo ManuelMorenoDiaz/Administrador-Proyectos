@@ -7,8 +7,11 @@ import { useModalFunctions } from '../../Functions-Alerts';
 import DatePicker from 'react-native-modern-datepicker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Platform } from 'react-native';
+
 
 const EditarProyecto = (props) => {
+
     const [titulo, setTitulo] = useState('');
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFinalizacion, setFechaFinalizacion] = useState('');
@@ -26,12 +29,21 @@ const EditarProyecto = (props) => {
         errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
         showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
         closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
-      } = useModalFunctions();
+    } = useModalFunctions();
 
-      useEffect(() => {
+    let baseURL;
+
+    if (Platform.OS === 'web') {
+        baseURL = 'http://localhost:3000';
+    } else {
+        baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
+    }
+    const URL = `${baseURL}/api/projects`;
+
+    useEffect(() => {
         // Cargar los datos del proyecto cuando se monta el componente
         if (props.idProyecto) {
-            axios.get(`http://localhost:3000/api/projects/${props.idProyecto}`)
+            axios.get(`${URL}/${props.idProyecto}`)
                 .then((response) => {
                     const proyectoData = response.data;
                     setProyecto(proyectoData);
@@ -71,19 +83,19 @@ const EditarProyecto = (props) => {
             fecha_fin: fechaFinalizacion,
             descripcion,
         };
-    
+
+        showInfoAlert();
         // Realizar la solicitud PUT a la API para actualizar el proyecto
         axios
-            .put(`http://localhost:3000/api/projects/${props.idProyecto}`, proyectoActualizado)
+            .put(`${URL}/${props.idProyecto}`, proyectoActualizado)
             .then((response) => {
                 if (response.status === 200) {
                     // Proyecto actualizado con éxito
                     console.log('Proyecto actualizado con éxito:', response.data);
                     showSuccessAlert();
-    
+
                     // Reiniciar el estado del proyecto
                     setProyecto({});
-    
                     setTitulo('');
                     setFechaInicio('');
                     setFechaFinalizacion('');
@@ -117,7 +129,7 @@ const EditarProyecto = (props) => {
                 style={{ marginRight: 10 }}
                 color="black"
             />
-            <Text>Modificar Proyecto</Text>
+            <Text>Editar Proyecto--{props.idProyecto}</Text>
             <Modal
                 isVisible={modalEditarProyecto}
                 animationIn="slideInUp"
@@ -139,7 +151,7 @@ const EditarProyecto = (props) => {
                             style={styles.input}
                         />
                     </View>
-    
+
                     <View style={styles.opcionesInput}>
                         <Text style={styles.textInput}>Fecha Inicio</Text>
                         <View style={stylesI.dateInputContainer}>
@@ -176,7 +188,7 @@ const EditarProyecto = (props) => {
                                 <View
                                     style={{
                                         width: '80%',
-                                        height: '80%',
+                                        height: 'auto',
                                         backgroundColor: 'red',
                                         borderRadius: 10,
                                         shadowColor: 'black',
@@ -204,7 +216,7 @@ const EditarProyecto = (props) => {
                                         mode="calendar"
                                         style={{
                                             width: '100%',
-                                            height: '100%',
+                                            height: 'auto',
                                             borderRadius: 10,
                                         }}
                                     />
@@ -212,7 +224,7 @@ const EditarProyecto = (props) => {
                             </View>
                         </Modal>
                     </View>
-    
+
                     <View style={styles.opcionesInput}>
                         <Text style={styles.textInput}>Fecha Finalizacion</Text>
                         <View style={stylesI.dateInputContainer}>
@@ -246,6 +258,7 @@ const EditarProyecto = (props) => {
                                 <View
                                     style={{
                                         width: '80%',
+                                        height: 'auto',
                                         backgroundColor: 'white',
                                         borderRadius: 10,
                                         padding: 20,
@@ -271,12 +284,17 @@ const EditarProyecto = (props) => {
                                         current={dateFinalizacion || '2023-10-10'}
                                         selected={dateFinalizacion}
                                         mode="calendar"
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            borderRadius: 10,
+                                          }}
                                     />
                                 </View>
                             </View>
                         </Modal>
                     </View>
-    
+
                     <View style={styles.opcionesInput}>
                         <Text style={styles.textInput}>Descripción</Text>
                         <TextInput
@@ -291,9 +309,30 @@ const EditarProyecto = (props) => {
                     </View>
                 </View>
             </Modal>
+            <CustomAlertModal
+                isVisible={errorModalVisible}
+                type="error"
+                message="Ocurrió un error."
+                onClose={closeErrorAlert}
+            />
+
+            <CustomAlertModal
+                isVisible={infoModalVisible}
+                type="info"
+                message="Se editara el siguiente proyecto"
+                onClose={closeInfoAlert}
+            />
+
+            <CustomAlertModal
+                isVisible={successModalVisible}
+                type="success"
+                message="Operación exitosa."
+                onClose={closeSuccessAlert}
+            />
+
         </TouchableOpacity>
     );
-    
+
 }
 
 export default EditarProyecto;
@@ -301,31 +340,30 @@ export default EditarProyecto;
 
 const stylesI = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
+        flex: 1,
+        justifyContent: 'center',
     },
     dateInputContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingLeft: 15,
-      borderRadius: 15,
-      marginBottom: 10,
-      backgroundColor: '#fff',
-      width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 15,
+        borderRadius: 15,
+        marginBottom: 10,
+        backgroundColor: '#fff',
+        width: '100%',
     },
     dateInput: {
-      flex: 1,
-      padding: 10,
+        flex: 1,
+        padding: 10,
     },
     iconContainer: {
-      padding: 10,
+        padding: 10,
     },
     modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
-  });
-  
+});

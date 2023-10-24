@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Button } from "react-native";
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Button, TextInput, StyleSheet } from "react-native";
 import styles from "../../styles/styleActiveInactive";
 import Modal from "react-native-modal";
-import { Icon } from "react-native-elements";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import CrearTarea from "./modals/CreateTask";
 import EditarProyecto from "./modals/EditProject";
 import Tarea from "./Task";
@@ -12,34 +12,36 @@ import { useModalFunctions } from "../Functions-Alerts";
 import axios from 'axios';
 import { Platform } from 'react-native';
 
-
 const Proyecto = () => {
-  
   const [data, setData] = useState([]);
   const [dataTask, setDataTask] = useState([]);
+  const [proyectosActivos, setProyectosActivos] = useState([]); 
+  const [modalOpciones, setModalOpciones] = useState({});
+  const [mostrarOpciones, setMostrarOpciones] = useState(false);
 
   let baseURL;
 
   if (Platform.OS === 'web') {
-    // En web, usa localhost
     baseURL = 'http://localhost:3000';
   } else {
     baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
   }
 
   const URL = `${baseURL}/api/projects`;
-  const URLTask = `${baseURL}/api/dependent_tasks/`;
+  const URLTask = `${baseURL}/api/dependent_tasks`;
 
   useEffect(() => {
     axios.get(URL)
       .then(response => {
         if (response.status === 200) {
           setData(response.data);
-          console.log(response.data);
+          setProyectosActivos(response.data.filter(project => project.estatus === 'Activo'));
+
         }
       })
       .catch(error => {
         console.error('Error al realizar la solicitud:', error);
+        showErrorAlert();
       });
   }, []);
 
@@ -48,11 +50,11 @@ const Proyecto = () => {
       .then(response => {
         if (response.status === 200) {
           setDataTask(response.data);
-          console.log(response.data);
         }
       })
       .catch(error => {
         console.error('Error al realizar la solicitud:', error);
+        showErrorAlert();
       });
   }, []);
 
@@ -69,10 +71,16 @@ const Proyecto = () => {
       [projectName]: !activeState[projectName],
     });
   };
-
-  const [modalOpciones, setModalOpciones] = useState(false);
+  // Función para mostrar/ocultar las opciones
   const mostrarMOpciones = () => {
-    setModalOpciones(!modalOpciones);
+    setMostrarOpciones(!mostrarOpciones);
+  };
+  
+  const toggleModal = (projectId) => {
+    setModalOpciones((prev) => ({
+      ...prev,
+      [projectId]: !prev[projectId] || false, 
+    }));
   };
   
 
@@ -93,14 +101,11 @@ const Proyecto = () => {
 
   const terminarProyecto = (projectId) => {
     showQuestionAlert();
-    axios.put(`${URL}/${projectId}`, { estatus: "Inactivo" }) // Realiza una solicitud PUT al servidor para actualizar el estado del proyecto
+    axios.put(`${URL}/${projectId}`, { estatus: 'Inactivo' })
       .then(response => {
         if (response.status === 200) {
-          // Actualiza el estado localmente para reflejar el cambio
-          const proyectoIndex = proyectosActivos.findIndex(project => project._id === projectId);
-          if (proyectoIndex !== -1) {
-            proyectosActivos[proyectoIndex].estatus = "Inactivo";
-          }
+          // Actualizar el estado local para reflejar el cambio
+          setProyectosActivos(proyectosActivos.filter(project => project._id !== projectId));
           showSuccessAlert();
         }
       })
@@ -109,8 +114,6 @@ const Proyecto = () => {
       });
   };
 
-  // Organizar las tareas por proyecto y estado
-  const proyectosActivos = data.filter(project => project.estatus === "Activo");
 
   const tareasPorProyecto = {};
 
@@ -142,7 +145,6 @@ const Proyecto = () => {
           <View>
             <TouchableOpacity onPress={() => toggleAccordion(`activo${index}`)}>
               <View style={styles.flexRow}>
-                {/* Renderizar el título del proyecto */}
                 <View style={[styles.activosTareas, styles.colorAP]}>
                   <Text
                     style={{
@@ -161,21 +163,22 @@ const Proyecto = () => {
                       color={"white"}
                       style={{ marginRight: 10 }}
                     />
-                    <Button title="=" onPress={mostrarMOpciones} />
+                    <Button title="=" onPress={() => toggleModal(project._id)} /> 
                   </View>
                 </View>
               </View>
             </TouchableOpacity>
             <Modal
-              isVisible={modalOpciones}
+              isVisible={modalOpciones[project._id]} // Utilizamos modalOpciones[project._id] para controlar la visibilidad
               animationIn="slideInUp"
               animationOut="slideOutDown"
               backdropOpacity={0.5}
-              onBackdropPress={mostrarMOpciones}
+              onBackdropPress={() => toggleModal(project._id)} // Cerrar modal al presionar fuera
               style={{
                 justifyContent: "center",
                 alignItems: "center",
                 margin: 0,
+                
               }}
             >
               <View style={styles.modalOpciones}>
@@ -193,7 +196,7 @@ const Proyecto = () => {
                   onPress={() => eliminarProyecto(project._id)}
                 >
                   <Icon
-                    name="delete"
+                    name="trash"
                     size={20}
                     style={{ marginRight: 10 }}
                     color="black"
@@ -202,7 +205,7 @@ const Proyecto = () => {
                 </TouchableOpacity>
                 <CustomAlertModal
                   isVisible={questionModalVisible}
-                  type="question"
+                  type="trash"
                   message="¿Estás seguro?"
                   onClose={closeQuestionAlert}
                 />
@@ -255,8 +258,24 @@ const Proyecto = () => {
           </View>
         </View>
       ))}
+      <CustomAlertModal
+        isVisible={errorModalVisible}
+        type="error"
+        message="Ocurrió un error."
+        onClose={closeErrorAlert}
+      />
+
+      <CustomAlertModal
+        isVisible={successModalVisible}
+        type="success"
+        message="Operación exitosa."
+        onClose={closeSuccessAlert}
+      />
     </View>
   );
 }
 
+
+
 export default Proyecto;
+

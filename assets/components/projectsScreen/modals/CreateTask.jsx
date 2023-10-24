@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Button, TextInput, StyleSheet  } from "react-native";
 import styles from "../../../styles/styleActiveInactive";
 import Modal from "react-native-modal";
-import CustomAlertModal from '../../Alerts';
 import { useModalFunctions } from '../../Functions-Alerts';
 import DatePicker from 'react-native-modern-datepicker';
 import axios from 'axios';
-import { Icon } from "react-native-elements";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Platform } from 'react-native';
+import CustomAlertModal from '../../Alerts';
 
 const CrearTarea = (props) => {
   const proyectoId = props.idProyecto;
@@ -18,13 +19,12 @@ const CrearTarea = (props) => {
   const [dateInicio, setDateInicio] = useState('');
   const dateTextInputRefInicio = useRef();
   const [modalVisibleInicio, setModalVisibleInicio] = useState(false);
-  
+
   const {
     errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
     showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
     closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
   } = useModalFunctions();
-
 
   const mostrarMCrearTarea = () => {
     setModalCrearTarea(!modalCrearTarea);
@@ -41,53 +41,56 @@ const CrearTarea = (props) => {
 
   const crearTarea = () => {
     const tarea = {
-        proyecto_id:proyectoId,
-        titulo,
-        fecha: fechaInicio,
-        descripcion,
-        estatus:'Por hacer'
-      };
+      proyecto_id: proyectoId,
+      titulo,
+      fecha: fechaInicio,
+      descripcion,
+      estatus: 'Por hacer',
+    };
 
-      // Realizar la solicitud POST a la API (Asegúrate de configurar la URL correcta)
+
+    let baseURL;
+
+    if (Platform.OS === 'web') {
+      baseURL = 'http://localhost:3000';
+    } else {
+      baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
+    }
+    const URLTask = `${baseURL}/api/dependent_tasks`;
+
+    // Realizar la solicitud POST a la API (Asegúrate de configurar la URL correcta)
     axios
-    .post('http://localhost:3000/api/dependent_tasks/', tarea)
-    .then((response) => {
-      if (response.status === 200) {
-        // Proyecto creado con éxito, puedes agregar manejo de éxito aquí
-        console.log('Tarea creada con éxito:', response.data);
-        showSuccessAlert();
-        // Limpiar los campos después de la creación
-        setTitulo('');
-        setFechaInicio('');
-        setDescripcion('');
-        modalCrearTarea();
-      }
-    })
-    .catch((error) => {
-      // Manejo de errores en caso de que la creación falle
-      console.error('Error al crear la tarea:', error);
-      // Puedes mostrar una alerta de error aquí
-      showErrorAlert();
-    });
-
+      .post(URLTask, tarea)
+      .then((response) => {
+        if (response.status === 200) {
+          // Proyecto creado con éxito, puedes agregar manejo de éxito aquí
+          console.log('Tarea creada con éxito:', response.data);
+          showSuccessAlert();
+          // Limpiar los campos después de la creación
+          setTitulo('');
+          setFechaInicio('');
+          setDescripcion('');
+        }
+      })
+      .catch((error) => {
+        // Manejo de errores en caso de que la creación falle
+        console.error('Error al crear la tarea:', error);
+        // Puedes mostrar una alerta de error aquí
+        showErrorAlert();
+      });
   };
 
   return (
     <TouchableOpacity
       style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "start",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'start',
+        alignItems: 'center',
       }}
       onPress={mostrarMCrearTarea}
     >
-      <Icon
-        name="book"
-        size={20}
-        style={{ marginRight: 10 }}
-        color="black"
-      />
+      <Icon name="book" size={20} style={{ marginRight: 10 }} color="black" />
       <Text>Crear Tarea</Text>
       <Modal
         isVisible={modalCrearTarea}
@@ -95,7 +98,7 @@ const CrearTarea = (props) => {
         animationOut="slideOutDown"
         backdropOpacity={0.5}
         onBackdropPress={mostrarMCrearTarea}
-        style={{ justifyContent: "center", alignItems: "center", margin: 0 }}
+        style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
       >
         <View style={{ width: '80%', backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
           <Text style={{ color: 'blue', fontWeight: 'bold', fontSize: 20, margin: 10 }}>Crear Tarea</Text>
@@ -144,7 +147,7 @@ const CrearTarea = (props) => {
                       <View
                         style={{
                           width: '80%',
-                          height: '80%',
+                          height: 'auto',
                           backgroundColor: 'red',
                           borderRadius: 10,
                           shadowColor: 'black',
@@ -172,7 +175,7 @@ const CrearTarea = (props) => {
                           mode="calendar"
                           style={{
                             width: '100%',
-                            height: '100%',
+                            height: 'auto',
                             borderRadius: 10,
                           }}
                         />
@@ -198,6 +201,19 @@ const CrearTarea = (props) => {
           </View>
         </View>
       </Modal>
+      <CustomAlertModal
+        isVisible={errorModalVisible}
+        type="error"
+        message="Ocurrió un error."
+        onClose={closeErrorAlert}
+      />
+
+      <CustomAlertModal
+        isVisible={successModalVisible}
+        type="success"
+        message="Operación exitosa."
+        onClose={closeSuccessAlert}
+      />
     </TouchableOpacity>
   );
 }
