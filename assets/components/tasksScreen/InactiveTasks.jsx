@@ -1,90 +1,82 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity} from 'react-native';
-import styles from '../../styles/styleActiveInactive'
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
+import axios from 'axios';
+import { Platform } from 'react-native';
+import styles from '../../styles/styleActiveInactive';
 
 const InactiveTasks = () => {
-    const [activeState, setActiveState] = useState({
-        activo1: false,
-        activo2: false,
-        inactivos1: false,
-        inactivos2: false,
+  const [activeState, setActiveState] = useState({});
 
+  const toggleAccordion = (taskName) => {
+    setActiveState({
+      ...activeState,
+      [taskName]: !activeState[taskName],
     });
+  };
 
-    const toggleAccordion = (projectName) => {
-        setActiveState({
-            ...activeState,
-            [projectName]: !activeState[projectName],
-        });
-    };
+  const [inactiveTasks, setInactiveTasks] = useState([]);
 
-    return (
-        <View style={styles.inactivos}>
-          <Text style={styles.title}>Inactivos</Text>
-          <View style={styles.acordeon}>
-            <View style={styles.item}>
-              <TouchableOpacity onPress={() => toggleAccordion('inactivos1')}>
-                <View style={styles.flexRow}>
-                  <View style={[styles.inactivosTareas]}>
-                    <Text style={{ color: 'white', fontWeight: 'bold', padding: 10, fontSize:17 }}>Creación de una app similar a Notion 1</Text>
-                    <Icon
-                      name={activeState.activo1 ? 'chevron-up' : 'chevron-down'}
-                      type="font-awesome" color={'white'} style={{ marginRight: 10 }}
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-              {activeState.inactivos1 && (
-                <View style={styles.contenido}>
-                  <View style={styles.contDescripcion}>
-                    <Text style={styles.h3}>Descripción</Text>
-                    <Text style={styles.p}>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus quos commodi neque quod dicta
-                      mollitia facere ipsa fuga natus perferendis corporis doloremque veritatis, iure reiciendis eius
-                      eveniet doloribus, beatae soluta!
-                    </Text>
-                  </View>
-                </View>
-              )}
-            </View>
-            
-          </View>
-          <View style={styles.acordeon}>
+  let API_URL;
+
+  if (Platform.OS === 'web') {
+    API_URL = 'http://localhost:3000/api/tasks/';
+  } else {
+    API_URL =
+      Platform.OS === 'android'
+        ? 'http://10.0.2.2:3000/api/tasks/'
+        : 'http://tu_direccion_de_servidor:3000/api/tasks/';
+  }
+
+  useEffect(() => {
+    axios
+      .get(API_URL)
+      .then((response) => {
+        if (response.status === 200) {
+          setInactiveTasks(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al realizar la solicitud:', error.message);
+      });
+  }, []);
+
+  const proyectosInactivos = inactiveTasks.filter((task) => task.estatus === 'Terminado');
+
+  return (
+    <View style={styles.inactivos}>
+      <Text style={styles.title}>Inactivos</Text>
+      {proyectosInactivos.map((task, index) => (
+        <View style={styles.acordeon} key={task._id}>
           <View style={styles.item}>
-              <TouchableOpacity onPress={() => toggleAccordion('inactivos2')}>
-                <View style={styles.flexRow}>
-                  <View style={[styles.inactivosTareas]}>
-                    <Text style={{ color: 'white', fontWeight: 'bold', padding: 10, fontSize:17 }}>Creación de una app similar a Notion 1</Text>
-                    <Icon
-                      name={activeState.activo1 ? 'chevron-up' : 'chevron-down'}
-                      type="font-awesome" color={'white'} style={{ marginRight: 10 }}
-                    />
-                  </View>
+            <TouchableOpacity onPress={() => toggleAccordion(`inactivos${index}`)}>
+              <View style={styles.flexRow}>
+                <View style={styles.inactivosTareas}>
+                  <Text style={{ color: 'white', fontWeight: 'bold', padding: 10, fontSize: 17 }}>
+                    {task.titulo}
+                  </Text>
+                  <Icon
+                    name={activeState[`inactivos${index}`] ? 'chevron-up' : 'chevron-down'}
+                    type="font-awesome"
+                    color={'white'}
+                    style={{ marginRight: 10 }}
+                  />
                 </View>
-              </TouchableOpacity>
-              {activeState.inactivos2 && (
-                <View style={styles.contenido}>
-                  <View style={styles.contDescripcion}>
-                    <Text style={styles.h3}>Descripción</Text>
-                    <Text style={styles.p}>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus quos commodi neque quod dicta
-                      mollitia facere ipsa fuga natus perferendis corporis doloremque veritatis, iure reiciendis eius
-                      eveniet doloribus, beatae soluta!
-                    </Text>
-                  </View>
-                  
+              </View>
+            </TouchableOpacity>
+            {activeState[`inactivos${index}`] && (
+              <View style={styles.contenido}>
+                <View style={styles.contDescripcion}>
+                  <Text style={styles.h3}>Descripción</Text>
+                  <Text style={styles.p}>{task.descripcion}</Text>
                 </View>
-              )}
-            </View>
+              </View>
+            )}
           </View>
-          
         </View>
-    )
-}
+      ))}
+    </View>
+  );
+};
 
-export default InactiveTasks
-
-
-
-
+export default InactiveTasks;

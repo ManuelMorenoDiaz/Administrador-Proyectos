@@ -191,7 +191,7 @@ const Proyecto = () => {
                     flexDirection: "row",
                     justifyContent: "start",
                     alignItems: "center",
-                    border: "2px solid red",
+                    
                   }}
                   onPress={() => eliminarProyecto(project._id)}
                 >

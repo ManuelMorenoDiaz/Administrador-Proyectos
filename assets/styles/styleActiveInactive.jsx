@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   modalOpciones: {
     backgroundColor: 'white',
     height: 'auto',
-    width: '100%',
+    width: '80%',
     display: 'flex',
     justifyContent: 'space-around',
     borderRadius: 10,

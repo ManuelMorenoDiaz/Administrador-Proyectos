@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Button, TextInput } from "react-native";
 import styles from "../../styles/styleActiveInactive";
 import Modal from "react-native-modal";
@@ -7,6 +7,8 @@ import EditarProyecto from "./modals/EditTask";
 import Compartir from "./modals/Share";
 import CustomAlertModal from "../Alerts";
 import { useModalFunctions } from "../Functions-Alerts"; 
+import axios from 'axios';
+import { Platform } from 'react-native';
 
 const Task = () => {
     const {
@@ -15,22 +17,46 @@ const Task = () => {
         closeErrorAlert, closeInfoAlert, closeSuccessAlert,closeQuestionAlert,
     } = useModalFunctions();
 
-    const [activeState, setActiveState] = useState({
-        activo1: false,
-        activo2: false,
-        inactivos: false,
-    });
+    const [activeState, setActiveState] = useState({});
 
-    const toggleAccordion = (projectName) => {
-        setActiveState({
-            ...activeState,
-            [projectName]: !activeState[projectName],
-        });
-    };
+  const toggleAccordion = (taskName) => {
+    setActiveState({
+      ...activeState,
+      [taskName]: !activeState[taskName],
+    });
+  };
+
+  const [activeTasks, setActiveTasks] = useState([]);
+
+  if (Platform.OS === 'web') {
+    API_URL = 'http://localhost:3000/api/tasks/';
+  } else {
+    API_URL =
+      Platform.OS === 'android'
+        ? 'http://10.0.2.2:3000/api/tasks/'
+        : 'http://tu_direccion_de_servidor:3000/api/tasks/';
+  }
+
+  useEffect(() => {
+    axios
+      .get(API_URL)
+      .then((response) => {
+        if (response.status === 200) {
+          setInactiveTasks(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al realizar la solicitud:', error.message);
+      });
+  }, []);
+
     const [modalOpciones, setModalOpciones] = useState(false);
     const mostrarMOpciones = () => {
         setModalOpciones(!modalOpciones);
     };
+
+  const proyectosActivos = activeTasks.filter((task) => task.estatus === 'Activo');
+
     return (
             <View style={styles.item}>
                 <TouchableOpacity onPress={() => toggleAccordion("activo1")}>

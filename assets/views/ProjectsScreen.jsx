@@ -91,7 +91,6 @@ const ProjectsScreen = ({ navigation }) => {
   };
 
 
-
   return (
     <ScrollView>
       <View style={stylesHead.container}>
