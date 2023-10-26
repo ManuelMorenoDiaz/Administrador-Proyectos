@@ -11,24 +11,33 @@ import CustomAlertModal from "../Alerts";
 import { useModalFunctions } from "../Functions-Alerts";
 import axios from 'axios';
 import { Platform } from 'react-native';
+import { useProject } from '../ProjectContext'
 
 const Proyecto = () => {
+  const { projects } = useProject();
   const [data, setData] = useState([]);
   const [dataTask, setDataTask] = useState([]);
   const [proyectosActivos, setProyectosActivos] = useState([]); 
   const [modalOpciones, setModalOpciones] = useState({});
   const [mostrarOpciones, setMostrarOpciones] = useState(false);
 
+  const {
+    errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
+    showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
+    closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
+  } = useModalFunctions();
+
+  const [activeState, setActiveState] = useState({});
+
   let baseURL;
+  const URL = `${baseURL}/api/projects`;
+  const URLTask = `${baseURL}/api/dependent_tasks`;
 
   if (Platform.OS === 'web') {
     baseURL = 'http://localhost:3000';
   } else {
     baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
   }
-
-  const URL = `${baseURL}/api/projects`;
-  const URLTask = `${baseURL}/api/dependent_tasks`;
 
   useEffect(() => {
     axios.get(URL)
@@ -58,13 +67,6 @@ const Proyecto = () => {
       });
   }, []);
 
-  const {
-    errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
-    showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
-    closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
-  } = useModalFunctions();
-
-  const [activeState, setActiveState] = useState({});
   const toggleAccordion = (projectName) => {
     setActiveState({
       ...activeState,
@@ -86,7 +88,7 @@ const Proyecto = () => {
 
   // Agregar función para eliminar proyecto
   const eliminarProyecto = (projectId) => {
-    showInfoAlert()
+    toggleModal(projectId);
     axios.delete(`${URL}/${projectId}`)
       .then(response => {
         if (response.status === 200) {
@@ -95,12 +97,12 @@ const Proyecto = () => {
       })
       .catch(error => {
         console.error('Error al eliminar el proyecto:', error);
+        showErrorAlert();
       });
   };
 
-
   const terminarProyecto = (projectId) => {
-    showQuestionAlert();
+    toggleModal(projectId);
     axios.put(`${URL}/${projectId}`, { estatus: 'Inactivo' })
       .then(response => {
         if (response.status === 200) {
@@ -111,12 +113,11 @@ const Proyecto = () => {
       })
       .catch(error => {
         console.error('Error al terminar el proyecto:', error);
+        showErrorAlert();
       });
   };
 
-
   const tareasPorProyecto = {};
-
   proyectosActivos.forEach(project => {
     if (!tareasPorProyecto[project._id]) {
       tareasPorProyecto[project._id] = {
@@ -215,7 +216,6 @@ const Proyecto = () => {
                     flexDirection: "row",
                     justifyContent: "start",
                     alignItems: "center",
-                    border: "2px solid red",
                   }}
                   onPress={() => terminarProyecto(project._id)}
                 >
@@ -227,12 +227,7 @@ const Proyecto = () => {
                   />
                   <Text>Terminar Proyecto</Text>
                 </TouchableOpacity>
-                <CustomAlertModal
-                  isVisible={infoModalVisible}
-                  type="info"
-                  message="El proyecto se terminará definitivamente"
-                  onClose={closeInfoAlert}
-                />
+                
               </View>
             </Modal>
             {activeState[`activo${index}`] && (
@@ -258,6 +253,12 @@ const Proyecto = () => {
           </View>
         </View>
       ))}
+      <CustomAlertModal
+        isVisible={infoModalVisible}
+        type="info"
+        message="El proyecto se terminará definitivamente"
+        onClose={closeInfoAlert}
+      />
       <CustomAlertModal
         isVisible={errorModalVisible}
         type="error"

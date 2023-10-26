@@ -10,19 +10,19 @@ import { useModalFunctions } from '../Functions-Alerts';
 import axios from 'axios';
 import { Platform } from 'react-native';
 
-
 const ActiveTasks = () => {
   const {
-    questionModalVisible,
-    showQuestionAlert,
-    closeQuestionAlert,
-    showInfoAlert,
-    showSuccessAlert,
+    errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
+    showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
+    closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
   } = useModalFunctions();
+
 
   const [activeState, setActiveState] = useState({});
   const [activeTasks, setActiveTasks] = useState([]);
-  const [modalOpciones, setModalOpciones] = useState(false);
+  const [modalOpciones, setModalOpciones] = useState({});
+
+  const tareasActivas = activeTasks.filter((task) => task.estatus === 'Activo');
 
   let API_URL;
 
@@ -36,10 +36,9 @@ const ActiveTasks = () => {
   }
 
   useEffect(() => {
-    // Función para obtener las tareas activas
     const fetchActiveTasks = async () => {
       try {
-        const response = await axios.get(API_URL); // Reemplaza con la URL correcta
+        const response = await axios.get(API_URL);
         setActiveTasks(response.data);
       } catch (error) {
         console.error('Error al obtener tareas activas:', error);
@@ -49,55 +48,59 @@ const ActiveTasks = () => {
     fetchActiveTasks();
   }, []);
 
-
-  const toggleAccordion = (taskName) => {
-    setActiveState({
-      ...activeState,
-      [taskName]: !activeState[taskName],
-    });
+  const toggleAccordion = (taskId) => {
+    setActiveState((prevState) => ({
+      ...prevState,
+      [taskId]: !prevState[taskId],
+    }));
   };
 
-  // Agregar función para eliminar tarea
+  const toggleModal = (taskId) => {
+    setModalOpciones((prev) => ({
+      ...prev,
+      [taskId]: !prev[taskId] || false,
+    }));
+  };
+
   const eliminarTarea = (taskId) => {
-    showInfoAlert();
+    toggleModal(taskId);
     axios
       .delete(`${API_URL}${taskId}`)
       .then((response) => {
         if (response.status === 200) {
-          // Actualiza la lista de tareas después de eliminar
-          setActiveTasks(activeTasks.filter((task) => task._id !== taskId));
+          setActiveTasks((tasks) => tasks.filter((task) => task._id !== taskId));
           showSuccessAlert();
         }
       })
       .catch((error) => {
         console.error('Error al eliminar la tarea:', error);
+        showErrorAlert();
       });
   };
 
   const terminarTarea = (taskId) => {
-    showQuestionAlert();
+    toggleModal(taskId);
     axios
       .put(`${API_URL}${taskId}`, { estatus: 'Terminado' })
       .then((response) => {
         if (response.status === 200) {
-          // Actualiza la lista de tareas después de marcar como terminada
-          setActiveTasks(activeTasks.filter((task) => task._id !== taskId));
+          setActiveTasks((tasks) => tasks.filter((task) => task._id !== taskId));
           showSuccessAlert();
         }
       })
       .catch((error) => {
         console.error('Error al terminar la tarea:', error);
+        showErrorAlert();
       });
   };
 
-  const tareasActivas = activeTasks.filter((task) => task.estatus === 'Activo');
   return (
     <View style={styles.activos}>
       <Text style={styles.title}>Activos</Text>
       {tareasActivas.map((task, index) => (
         <View style={styles.acordeon} key={task._id}>
           <View style={styles.item}>
-            <TouchableOpacity onPress={() => toggleAccordion(`activos${index}`)}>
+            <TouchableOpacity onPress={() => toggleAccordion(task._id)}>
               <View style={styles.flexRow}>
                 <View style={[styles.activosTareas, styles.colorAT]}>
                   <Text
@@ -112,21 +115,21 @@ const ActiveTasks = () => {
                   </Text>
                   <View style={styles.optionesTareasAct}>
                     <Icon
-                      name={activeState[`activos${index}`] ? 'chevron-up' : 'chevron-down'}
+                      name={activeState[task._id] ? 'chevron-up' : 'chevron-down'}
                       type="font-awesome"
                       color={'white'}
                       style={{ marginRight: 10 }}
                     />
-                    <Button title="=" onPress={() => setModalOpciones(true)} />
+                    <Button title="=" onPress={() => toggleModal(task._id)} />
                   </View>
                 </View>
               </View>
               <Modal
-                isVisible={modalOpciones}
+                isVisible={modalOpciones[task._id]}
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 backdropOpacity={0.5}
-                onBackdropPress={() => setModalOpciones(false)}
+                onBackdropPress={() => toggleModal(task._id)}
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -134,8 +137,8 @@ const ActiveTasks = () => {
                 }}
               >
                 <View style={styles.modalOpciones}>
-                  <EditarTarea />
-                  <Compartir />
+                  <EditarTarea idTarea={task._id} />
+                  <Compartir idTarea={task._id} />
                   <TouchableOpacity
                     style={{
                       display: 'flex',
@@ -148,12 +151,6 @@ const ActiveTasks = () => {
                     <Icon name="trash" size={20} style={{ marginRight: 10 }} color="black" />
                     <Text>Eliminar Tarea</Text>
                   </TouchableOpacity>
-                  <CustomAlertModal
-                    isVisible={questionModalVisible}
-                    type="question"
-                    message="¿Estás seguro?"
-                    onClose={closeQuestionAlert}
-                  />
                   <TouchableOpacity
                     style={{
                       display: 'flex',
@@ -169,7 +166,7 @@ const ActiveTasks = () => {
                 </View>
               </Modal>
             </TouchableOpacity>
-            {activeState[`activos${index}`] && (
+            {activeState[task._id] && (
               <View style={styles.contenido}>
                 <View style={styles.contDescripcion}>
                   <Text style={styles.h3}>Descripción</Text>
@@ -180,6 +177,18 @@ const ActiveTasks = () => {
           </View>
         </View>
       ))}
+      <CustomAlertModal
+        isVisible={errorModalVisible}
+        type="error"
+        message="Ocurrió un error."
+        onClose={closeErrorAlert}
+      />
+      <CustomAlertModal
+        isVisible={successModalVisible}
+        type="success"
+        message="Operación exitosa."
+        onClose={closeSuccessAlert}
+      />
     </View>
   );
 };

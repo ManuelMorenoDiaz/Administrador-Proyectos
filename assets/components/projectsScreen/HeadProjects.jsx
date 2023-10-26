@@ -7,7 +7,6 @@ import Modal from 'react-native-modal';
 const HeadProjects = ({ navigation }) => {
   const [Modal2Visible, setModal2Visible] = useState(false);
 
-
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
   };

@@ -17,6 +17,8 @@ const InactiveTasks = () => {
 
   const [inactiveTasks, setInactiveTasks] = useState([]);
 
+  const proyectosInactivos = inactiveTasks.filter((task) => task.estatus === 'Terminado');
+
   let API_URL;
 
   if (Platform.OS === 'web') {
@@ -40,8 +42,6 @@ const InactiveTasks = () => {
         console.error('Error al realizar la solicitud:', error.message);
       });
   }, []);
-
-  const proyectosInactivos = inactiveTasks.filter((task) => task.estatus === 'Terminado');
 
   return (
     <View style={styles.inactivos}>

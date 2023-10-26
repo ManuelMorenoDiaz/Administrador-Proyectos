@@ -18,6 +18,9 @@ const Task = () => {
     } = useModalFunctions();
 
     const [activeState, setActiveState] = useState({});
+    const [activeTasks, setActiveTasks] = useState([]);
+    const [modalOpciones, setModalOpciones] = useState(false);
+    const proyectosActivos = activeTasks.filter((task) => task.estatus === 'Activo');
 
   const toggleAccordion = (taskName) => {
     setActiveState({
@@ -25,8 +28,6 @@ const Task = () => {
       [taskName]: !activeState[taskName],
     });
   };
-
-  const [activeTasks, setActiveTasks] = useState([]);
 
   if (Platform.OS === 'web') {
     API_URL = 'http://localhost:3000/api/tasks/';
@@ -50,12 +51,9 @@ const Task = () => {
       });
   }, []);
 
-    const [modalOpciones, setModalOpciones] = useState(false);
     const mostrarMOpciones = () => {
         setModalOpciones(!modalOpciones);
     };
-
-  const proyectosActivos = activeTasks.filter((task) => task.estatus === 'Activo');
 
     return (
             <View style={styles.item}>

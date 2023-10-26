@@ -12,10 +12,16 @@ import Modal from 'react-native-modal';
 import DatePicker from 'react-native-modern-datepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
+import { Platform } from 'react-native';
+import { useProject } from '../components/ProjectContext';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import stylesI from '../styles/stylesI';
 
 
 const ProjectsScreen = ({ navigation }) => {
+  const { dispatch } = useProject();
   const [Modal2Visible, setModal2Visible] = useState(false);
+
   const [titulo, setTitulo] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFinalizacion, setFechaFinalizacion] = useState('');
@@ -34,7 +40,7 @@ const ProjectsScreen = ({ navigation }) => {
     closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
   } = useModalFunctions();
 
-  
+
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
   };
@@ -57,6 +63,17 @@ const ProjectsScreen = ({ navigation }) => {
     dateTextInputRefFinalizacion.current.clear();
   };
 
+  let baseURL;
+
+  if (Platform.OS === 'web') {
+    baseURL = 'http://localhost:3000';
+  } else {
+    baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
+  }
+
+  const URL = `${baseURL}/api/projects`;
+
+
   const guardarProyecto = () => {
     // Crear el objeto del proyecto a enviar a la API
     const proyecto = {
@@ -66,20 +83,19 @@ const ProjectsScreen = ({ navigation }) => {
       descripcion,
     };
 
-    // Realizar la solicitud POST a la API (Asegúrate de configurar la URL correcta)
     axios
-      .post('http://localhost:3000/api/projects/', proyecto)
+      .post(URL, proyecto)
       .then((response) => {
         if (response.status === 200) {
           // Proyecto creado con éxito, puedes agregar manejo de éxito aquí
           console.log('Proyecto creado con éxito:', response.data);
           showSuccessAlert();
-          // Limpiar los campos después de la creación
           setTitulo('');
           setFechaInicio('');
           setFechaFinalizacion('');
           setDescripcion('');
           toggleModal2();
+        
         }
       })
       .catch((error) => {
@@ -88,6 +104,7 @@ const ProjectsScreen = ({ navigation }) => {
         // Puedes mostrar una alerta de error aquí
         showErrorAlert();
       });
+
   };
 
 
@@ -139,12 +156,12 @@ const ProjectsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                   <Modal
-                      animationType="slide"
-                      transparent={false}
-                      visible={modalVisibleInicio}
-                      onRequestClose={() => setModalVisibleInicio(false)}
-                      style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-                    >
+                    animationType="slide"
+                    transparent={false}
+                    visible={modalVisibleInicio}
+                    onRequestClose={() => setModalVisibleInicio(false)}
+                    style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+                  >
                     <View
                       style={{
                         flex: 1,
@@ -152,7 +169,7 @@ const ProjectsScreen = ({ navigation }) => {
                         alignItems: 'center',
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
                         width: '100%',
-                          height: '100%',
+                        height: '100%',
                       }}
                     >
                       <View
@@ -252,7 +269,7 @@ const ProjectsScreen = ({ navigation }) => {
                           }}
                           current={dateFinalizacion || '2023-10-10'}
                           selected={dateFinalizacion}
-                          mode="calendar"heightstyle={{
+                          mode="calendar" heightstyle={{
                             width: '100%',
                             height: 'auto',
                             borderRadius: 10,
@@ -293,32 +310,3 @@ const ProjectsScreen = ({ navigation }) => {
 
 export default ProjectsScreen;
 
-const stylesI = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  dateInputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 15,
-    borderRadius: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    width: '100%',
-  },
-  dateInput: {
-    flex: 1,
-    padding: 10,
-  },
-  iconContainer: {
-    padding: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-});

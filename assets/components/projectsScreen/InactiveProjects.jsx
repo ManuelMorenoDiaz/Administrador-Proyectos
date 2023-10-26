@@ -7,27 +7,21 @@ import { Platform } from 'react-native';
 
 const InactivosProjects = () => {
   const [activeState, setActiveState] = useState({});
-
-  const toggleAccordion = (projectName) => {
-    setActiveState({
-      ...activeState,
-      [projectName]: !activeState[projectName],
-    });
-  };
-
+  const [dataTask, setDataTask] = useState([]);
   const [inactiveProjects, setInactiveProjects] = useState([]);
 
-  // La URL de la API para obtener proyectos inactivos
-  let API_URL;
+  let baseURL;
 
   if (Platform.OS === 'web') {
-    // En web, usa localhost
-    API_URL = 'http://localhost:3000/api/projects/';
+    baseURL = 'http://localhost:3000';
   } else {
-    // En Android o iOS, usa 10.0.2.2 para emulador Android
-    // y la dirección del servidor en producción
-    API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:3000/api/projects/' : 'http://tu_direccion_de_servidor:3000/api/projects/';
+    baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
   }
+  const API_URL = `${baseURL}/api/projects`;
+  const URLTask = `${baseURL}/api/dependent_tasks`;
+
+    // Filtrar solo los proyectos con estatus "Inactivo"
+    const proyectosInactivos = inactiveProjects.filter(project => project.estatus === "Inactivo");
 
   useEffect(() => {
     axios.get(API_URL)
@@ -41,8 +35,26 @@ const InactivosProjects = () => {
       });
   }, []);
 
-  // Filtrar solo los proyectos con estatus "Inactivo"
-  const proyectosInactivos = inactiveProjects.filter(project => project.estatus === "Inactivo");
+  useEffect(() => {
+    axios.get(URLTask)
+      .then(response => {
+        if (response.status === 200) {
+          setDataTask(response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la solicitud:', error);
+        showErrorAlert();
+      });
+  }, []);
+
+
+  const toggleAccordion = (projectName) => {
+    setActiveState({
+      ...activeState,
+      [projectName]: !activeState[projectName],
+    });
+  };
 
   return (
     <View style={styles.inactivos}>
@@ -75,18 +87,16 @@ const InactivosProjects = () => {
                 </View>
                 <View style={styles.conTareas}>
                   <Text style={styles.h3}>Tareas</Text>
-                  <View style={styles.tarea}>
-                  <View style={styles.tareaLeft}>
-                    <Text style={styles.h4}>Validación del diseño de la app</Text>
-                    <Text>Oscar Alfredo Diaz</Text>
-                  </View>
-                </View>
-                <View style={styles.tarea}>
-                  <View style={styles.tareaLeft}>
-                    <Text style={styles.h4}>Validación del diseño de la app</Text>
-                    <Text>Oscar Alfredo Diaz</Text>
-                  </View>
-                </View>
+                  {dataTask
+                    .filter(task => task.proyecto_id === project._id)
+                    .map((task, taskIndex) => (
+                      <View style={styles.tarea} key={taskIndex}>
+                        <View style={styles.tareaLeft}>
+                          <Text style={styles.h4}>{task.titulo}</Text>
+                          <Text>{task.titulo}</Text>
+                        </View>
+                      </View>
+                    ))}
                 </View>
               </View>
             )}

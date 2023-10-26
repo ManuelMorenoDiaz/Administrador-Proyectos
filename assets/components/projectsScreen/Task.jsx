@@ -8,6 +8,7 @@ import axios from 'axios';
 import DatePicker from 'react-native-modern-datepicker';
 import { useModalFunctions } from '../Functions-Alerts';
 import CustomAlertModal from '../Alerts';
+import stylesI from '../../styles/stylesI';
 
 
 const Tarea = (props) => {
@@ -64,13 +65,11 @@ const Tarea = (props) => {
             .then((response) => {
                 if (response.status === 200) {
                     console.log('tarea actualizada con éxito:', response.data);
-                    // Llamar a tu función de éxito aquí
                     showSuccessAlert();
                 }
             })
             .catch((error) => {
                 console.error('Error al actualizar el proyecto:', error);
-                // Llamar a tu función de error aquí
                 showErrorAlert();
             });
     };
@@ -267,33 +266,3 @@ const Tarea = (props) => {
 }
 
 export default Tarea;
-
-const stylesI = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    dateInputContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 15,
-        borderRadius: 15,
-        marginBottom: 10,
-        backgroundColor: '#fff',
-        width: '100%',
-    },
-    dateInput: {
-        flex: 1,
-        padding: 10,
-    },
-    iconContainer: {
-        padding: 10,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-});

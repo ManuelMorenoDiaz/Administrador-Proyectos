@@ -8,14 +8,18 @@ import DatePicker from 'react-native-modern-datepicker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Platform } from 'react-native';
+import stylesI from '../../../styles/stylesI'
 
 
 const EditarProyecto = (props) => {
+    let baseURL;
+    const URL = `${baseURL}/api/projects`;
 
     const [titulo, setTitulo] = useState('');
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFinalizacion, setFechaFinalizacion] = useState('');
     const [descripcion, setDescripcion] = useState('');
+    
     const [dateInicio, setDateInicio] = useState('');
     const [dateFinalizacion, setDateFinalizacion] = useState('');
     const dateTextInputRefInicio = useRef();
@@ -23,7 +27,7 @@ const EditarProyecto = (props) => {
     const [modalVisibleInicio, setModalVisibleInicio] = useState(false);
     const [modalVisibleFinalizacion, setModalVisibleFinalizacion] = useState(false);
 
-    const [proyecto, setProyecto] = useState({}); // Estado para almacenar los datos del proyecto
+    const [proyecto, setProyecto] = useState({});
 
     const {
         errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
@@ -31,32 +35,12 @@ const EditarProyecto = (props) => {
         closeErrorAlert, closeInfoAlert, closeSuccessAlert, closeQuestionAlert,
     } = useModalFunctions();
 
-    let baseURL;
+    const [modalEditarProyecto, setModalEditarProyecto] = useState(false);
 
-    if (Platform.OS === 'web') {
-        baseURL = 'http://localhost:3000';
-    } else {
-        baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
-    }
-    const URL = `${baseURL}/api/projects`;
+    const mostrarMEditarProyecto = () => {
+        setModalEditarProyecto(!modalEditarProyecto);
+    };
 
-    useEffect(() => {
-        // Cargar los datos del proyecto cuando se monta el componente
-        if (props.idProyecto) {
-            axios.get(`${URL}/${props.idProyecto}`)
-                .then((response) => {
-                    const proyectoData = response.data;
-                    setProyecto(proyectoData);
-                    setTitulo(proyectoData.titulo);
-                    setFechaInicio(proyectoData.fecha_inicio);
-                    setFechaFinalizacion(proyectoData.fecha_fin);
-                    setDescripcion(proyectoData.descripcion);
-                })
-                .catch((error) => {
-                    console.error('Error al cargar los datos del proyecto:', error);
-                });
-        }
-    }, [props.idProyecto]);
     const openDatePickerInicio = () => {
         setModalVisibleInicio(true);
     };
@@ -75,6 +59,30 @@ const EditarProyecto = (props) => {
         dateTextInputRefFinalizacion.current.clear();
     };
 
+    if (Platform.OS === 'web') {
+        baseURL = 'http://localhost:3000';
+    } else {
+        baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
+    }
+
+    useEffect(() => {
+        // Cargar los datos del proyecto cuando se monta el componente
+        if (props.idProyecto) {
+            axios.get(`${URL}/${props.idProyecto}`)
+                .then((response) => {
+                    const proyectoData = response.data;
+                    setProyecto(proyectoData);
+                    setTitulo(proyectoData.titulo);
+                    setFechaInicio(proyectoData.fecha_inicio);
+                    setFechaFinalizacion(proyectoData.fecha_fin);
+                    setDescripcion(proyectoData.descripcion);
+                })
+                .catch((error) => {
+                    console.error('Error al cargar los datos del proyecto:', error);
+                });
+        }
+    }, [props.idProyecto]);
+
     const guardarProyecto = () => {
         // Crear el objeto del proyecto a enviar a la API
         const proyectoActualizado = {
@@ -83,8 +91,7 @@ const EditarProyecto = (props) => {
             fecha_fin: fechaFinalizacion,
             descripcion,
         };
-
-        showInfoAlert();
+        mostrarMEditarProyecto();
         // Realizar la solicitud PUT a la API para actualizar el proyecto
         axios
             .put(`${URL}/${props.idProyecto}`, proyectoActualizado)
@@ -96,6 +103,7 @@ const EditarProyecto = (props) => {
 
                     // Reiniciar el estado del proyecto
                     setProyecto({});
+                    
                     setTitulo('');
                     setFechaInicio('');
                     setFechaFinalizacion('');
@@ -107,10 +115,6 @@ const EditarProyecto = (props) => {
                 console.error('Error al actualizar el proyecto:', error);
                 showErrorAlert();
             });
-    };
-    const [modalEditarProyecto, setModalEditarProyecto] = useState(false);
-    const mostrarMEditarProyecto = () => {
-        setModalEditarProyecto(!modalEditarProyecto);
     };
 
     return (
@@ -337,33 +341,3 @@ const EditarProyecto = (props) => {
 
 export default EditarProyecto;
 
-
-const stylesI = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    dateInputContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 15,
-        borderRadius: 15,
-        marginBottom: 10,
-        backgroundColor: '#fff',
-        width: '100%',
-    },
-    dateInput: {
-        flex: 1,
-        padding: 10,
-    },
-    iconContainer: {
-        padding: 10,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-});

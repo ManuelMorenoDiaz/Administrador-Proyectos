@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Button, TextInput, StyleSheet  } from "react-native";
 import styles from "../../../styles/styleActiveInactive";
+import stylesI from '../../../styles/stylesI'
 import Modal from "react-native-modal";
 import { useModalFunctions } from '../../Functions-Alerts';
 import DatePicker from 'react-native-modern-datepicker';
@@ -8,6 +9,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Platform } from 'react-native';
 import CustomAlertModal from '../../Alerts';
+
 
 const CrearTarea = (props) => {
   const proyectoId = props.idProyecto;
@@ -47,7 +49,6 @@ const CrearTarea = (props) => {
       descripcion,
       estatus: 'Por hacer',
     };
-
 
     let baseURL;
 
@@ -220,34 +221,3 @@ const CrearTarea = (props) => {
 
 export default CrearTarea;
 
-
-const stylesI = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    dateInputContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingLeft: 15,
-      borderRadius: 15,
-      marginBottom: 10,
-      backgroundColor: '#fff',
-      width: '100%',
-    },
-    dateInput: {
-      flex: 1,
-      padding: 10,
-    },
-    iconContainer: {
-      padding: 10,
-    },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-  });
-  

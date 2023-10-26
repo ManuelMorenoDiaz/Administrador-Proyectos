@@ -9,6 +9,7 @@ import DatePicker from 'react-native-modern-datepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import { Platform } from 'react-native';
+import stylesI from '../../styles/stylesI';
 
 const HeadTasks = () => {
   const {
@@ -27,6 +28,7 @@ const HeadTasks = () => {
   const dateTextInputRefFinalizacion = useRef();
   const [modalVisibleInicio, setModalVisibleInicio] = useState(false);
 
+  let API_URL;
 
   const toggleModal2 = () => {
     setModal2Visible(!Modal2Visible);
@@ -49,8 +51,6 @@ const HeadTasks = () => {
     setDateFinalizacion('');
     dateTextInputRefFinalizacion.current.clear();
   };
-
-  let API_URL;
 
   if (Platform.OS === 'web') {
     API_URL = 'http://localhost:3000/api/tasks/';
@@ -210,33 +210,3 @@ const HeadTasks = () => {
 }
 
 export default HeadTasks;
-
-const stylesI = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  dateInputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 15,
-    borderRadius: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    width: '100%',
-  },
-  dateInput: {
-    flex: 1,
-    padding: 10,
-  },
-  iconContainer: {
-    padding: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-});
