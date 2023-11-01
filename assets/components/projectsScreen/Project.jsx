@@ -30,14 +30,14 @@ const Proyecto = () => {
   const [activeState, setActiveState] = useState({});
 
   let baseURL;
-  const URL = `${baseURL}/api/projects`;
-  const URLTask = `${baseURL}/api/dependent_tasks`;
-
   if (Platform.OS === 'web') {
     baseURL = 'http://localhost:3000';
   } else {
     baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
   }
+
+  const URL = `${baseURL}/api/projects`;
+  const URLTask = `${baseURL}/api/dependent_tasks`;
 
   useEffect(() => {
     axios.get(URL)
@@ -45,7 +45,6 @@ const Proyecto = () => {
         if (response.status === 200) {
           setData(response.data);
           setProyectosActivos(response.data.filter(project => project.estatus === 'Activo'));
-
         }
       })
       .catch(error => {
@@ -56,7 +55,7 @@ const Proyecto = () => {
 
   useEffect(() => {
     axios.get(URLTask)
-      .then(response => {
+      .then (response => {
         if (response.status === 200) {
           setDataTask(response.data);
         }
