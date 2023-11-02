@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Button, TextInput, StyleSheet } from 'react-native';
 import styles from '../styles/styleActiveInactive';
 import stylesHead from '../styles/stylesHead';
-import CenterProjects from '../components/projectsScreen/CenterProjects';
+import Center from '../components/Center'
 import ActivosProjects from '../components/projectsScreen/ActiveProjects';
 import InactivosProjects from '../components/projectsScreen/InactiveProjects';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -116,7 +116,7 @@ const ProjectsScreen = ({ navigation }) => {
             <TouchableOpacity style={stylesHead.button} onPress={() => navigation.navigate('Tasks')}>
               <Text style={stylesHead.buttonText}>Tareas Individuales</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={stylesHead.addButton} onPress={toggleModal2}>
+            <TouchableOpacity style={[stylesHead.addButton,{borderRadius:100}]} onPress={toggleModal2}>
               <Text style={stylesHead.addButtonText}>+</Text>
             </TouchableOpacity>
             <Modal
@@ -300,7 +300,7 @@ const ProjectsScreen = ({ navigation }) => {
           message="Operación exitosa."
           onClose={closeSuccessAlert}
         />
-        <CenterProjects />
+        <Center color1='#1ABCFE' color2='#F2841E' num1='2' num2='2' nam1='Activos' nam2='Inactivos'/>
         <ActivosProjects />
         <InactivosProjects />
       </View>

@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
+import Center from '../components/Center';
+import IndividualTasks from '../components/homeScreen/IndividualTasks';
+import ActiveProjectsH from '../components/homeScreen/ActiveProjectsH';
 
 const HomeScreen = () => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Home Screen</Text>
-      </View>
+      <ScrollView>
+        <Center tp={true} color1='#1ABCFE' color2='#B781FB' num1='1' num2='1' nam1='Proyectos' nam2='Tareas Individuales'/>
+        <ActiveProjectsH />
+        <IndividualTasks />
+      </ScrollView>
     );
   };
 
