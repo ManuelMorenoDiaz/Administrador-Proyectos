@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
       borderColor:'gray',
       borderWidth:0.5,
       padding:5,
-      marginBottom:5
+      marginTop:5
     }
   });
 
