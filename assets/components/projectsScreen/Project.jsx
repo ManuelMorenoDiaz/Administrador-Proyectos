@@ -156,12 +156,12 @@ const Proyecto = () => {
                   >
                     {project.titulo}
                   </Text>
-                  <View style={styles.optionesTareasAct}>
+                  <View style={styles.optionesTareasAct} >
                     <Icon
                       name={activeState[`activo${index}`] ? "chevron-up" : "chevron-down"}
                       type="font-awesome"
                       color={"white"}
-                      style={{ marginRight: 10 }}
+                      style={{ marginRight: 10}}
                     />
                     <Button title="=" onPress={() => toggleModal(project._id)} /> 
                   </View>

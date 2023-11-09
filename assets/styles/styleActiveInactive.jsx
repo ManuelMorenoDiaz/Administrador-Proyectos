@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 10
   },
   modalOpciones: {
     backgroundColor: 'white',

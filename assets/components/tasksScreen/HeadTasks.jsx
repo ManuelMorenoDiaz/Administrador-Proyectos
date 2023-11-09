@@ -78,11 +78,10 @@ const HeadTasks = (props) => {
           setFechaInicio('');
           setDescripcion('');
           toggleModal2();
-
         }
       })
       .catch((error) => {
-        console.error('Error al crear la traea:', error);
+        console.error('Error al crear la tarea:', error);
         showErrorAlert();
       });
   };
@@ -90,7 +89,7 @@ const HeadTasks = (props) => {
   return (
     <View style={stylesHead.headProjects}>
       <View style={stylesHead.options}>
-        <TouchableOpacity style={[stylesHead.addButton,{borderRadius:props.radio}]} onPress={toggleModal2}>
+        <TouchableOpacity style={[stylesHead.addButton, { borderRadius: props.radio }]} onPress={toggleModal2}>
           <Text style={stylesHead.addButtonText}>{props.nom}</Text>
         </TouchableOpacity>
         <Modal

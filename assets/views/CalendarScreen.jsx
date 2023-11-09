@@ -228,60 +228,60 @@ function MyCalendar(props) {
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalContainer}>
             <TouchableWithoutFeedback>
-            <View style={styles.modalContent}>
-  {selectedEvents.length === 1 ? (
-    selectedEvents.map((event) => {
-      if (event.type === 'task') {
-        return (
-          <View key={event.id}>
-            <Text style={styles.modalTitle}>{event.title}</Text>
-            <Text style={{ fontSize: 15 }}>Fecha: {event.start}</Text>
-            <Text style={styles.h3}>Descripción</Text>
-            <Text style={styles.modalDescription}>{event.description}</Text>
-          </View>
-        );
-      } else if (event.type === 'project') {
-        return (
-          <View key={event.id}>
-            <Text style={styles.modalTitle}>{event.title}</Text>
-            <Text style={{ fontSize: 15 }}>Fecha de Inicio: {event.start}</Text>
-            <Text style={{ fontSize: 15 }}>Fecha de Finalización: {event.end}</Text>
-            <Text style={styles.h3}>Descripción</Text>
-            <Text style={styles.modalDescription}>{event.description}</Text>
-            <View>
-              <Text style={styles.h3}>Tareas</Text>
-              {Object.entries(tareasPorProyecto[event.id]?.tareas).map(([estado, tareas]) => (
-                <View key={estado}>
-                  <Text style={styles.h3}>{estado}</Text>
-                  {tareas.map((tarea) => (
-                    <View key={tarea._id} style={styles.targTask}>
-                      <Text style={{ color: event.type === 'task' ? '#B781FB' : '#1ABCFE', fontSize: 15 }}>
-                        {tarea.titulo}
-                      </Text>
-                      <Text>Responsable: {tarea.responsable}</Text>
-                    </View>
-                  ))}
-                </View>
-              ))}
-            </View>
-          </View>
-        );
-      }
-    })
-  ) : (
-    // Mostrar solo título y fecha de inicio cuando hay múltiples eventos en un día
-    selectedEvents.map((event) => {
-      return (
-        <View key={event.id} style={{ backgroundColor: event.type === 'task' ? '#B781FB' : '#1ABCFE' ,marginTop: 10, padding: 5, borderRadius: 5}}>
-          <Text style={styles.modalTitle} >
-            {event.title}
-          </Text>
-          <Text style={{ fontSize: 15 }}>Fecha de Inicio: {event.start}</Text>
-        </View>
-      );
-    })
-  )}
-</View>
+              <View style={styles.modalContent}>
+                {selectedEvents.length === 1 ? (
+                  selectedEvents.map((event) => {
+                    if (event.type === 'task') {
+                      return (
+                        <View key={event.id}>
+                          <Text style={styles.modalTitle}>{event.title}</Text>
+                          <Text style={{ fontSize: 15 }}>Fecha: {event.start}</Text>
+                          <Text style={styles.h3}>Descripción</Text>
+                          <Text style={styles.modalDescription}>{event.description}</Text>
+                        </View>
+                      );
+                    } else if (event.type === 'project') {
+                      return (
+                        <View key={event.id}>
+                          <Text style={styles.modalTitle}>{event.title}</Text>
+                          <Text style={{ fontSize: 15 }}>Fecha de Inicio: {event.start}</Text>
+                          <Text style={{ fontSize: 15 }}>Fecha de Finalización: {event.end}</Text>
+                          <Text style={styles.h3}>Descripción</Text>
+                          <Text style={styles.modalDescription}>{event.description}</Text>
+                          <View>
+                            <Text style={styles.h3}>Tareas</Text>
+                            {Object.entries(tareasPorProyecto[event.id]?.tareas).map(([estado, tareas]) => (
+                              <View key={estado}>
+                                <Text style={styles.h3}>{estado}</Text>
+                                {tareas.map((tarea) => (
+                                  <View key={tarea._id} style={styles.targTask}>
+                                    <Text style={{ color: event.type === 'task' ? '#B781FB' : '#1ABCFE', fontSize: 15 }}>
+                                      {tarea.titulo}
+                                    </Text>
+                                    <Text>Responsable: {tarea.responsable}</Text>
+                                  </View>
+                                ))}
+                              </View>
+                            ))}
+                          </View>
+                        </View>
+                      );
+                    }
+                  })
+                ) : (
+                  // Mostrar solo título y fecha de inicio cuando hay múltiples eventos en un día
+                  selectedEvents.map((event) => {
+                    return (
+                      <View key={event.id} style={{ backgroundColor: event.type === 'task' ? '#B781FB' : '#1ABCFE', marginTop: 10, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.modalTitle} >
+                          {event.title}
+                        </Text>
+                        <Text style={{ fontSize: 15 }}>Fecha de Inicio: {event.start}</Text>
+                      </View>
+                    );
+                  })
+                )}
+              </View>
 
             </TouchableWithoutFeedback>
           </View>
