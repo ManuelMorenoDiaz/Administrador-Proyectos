@@ -81,12 +81,12 @@ const IndividualTasks = () => {
                   >
                     <Text>{task.titulo}</Text> <Text>{task.estatus}</Text>
                   </Text>
-                  <View style={styles.optionesTareasAct}>
+                  <View style={styles.optionesTareasAct} >
                     <Icon
                       name={activeState[task._id] ? 'chevron-up' : 'chevron-down'}
                       type="font-awesome"
                       color={'white'}
-                      style={{ marginRight: 10 }}
+                      style={{ marginRight: 10, paddingRight:20 }}
                     />
                   </View>
                 </View>
