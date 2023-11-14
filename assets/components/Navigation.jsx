@@ -11,7 +11,6 @@ import { ProjectProvider } from './ProjectContext';
 import { Icon } from 'react-native-elements';
 
 const Stack = createStackNavigator();
-
 function HomeStack() {
   return (
     <Stack.Navigator>

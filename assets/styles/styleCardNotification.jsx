@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     },
     descripcion:{
         color:'white',
+        textAlign:'justify'
     }
   });
 

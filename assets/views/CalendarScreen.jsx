@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
+  ScrollView,
   View,
   Text,
   Modal,
@@ -141,7 +140,7 @@ function MyCalendar(props) {
   };
 
   return (
-    <>
+    <ScrollView>
       <Calendar
         current={'2023-10-01'}
         minDate={'2023-10-01'}
@@ -244,7 +243,7 @@ function MyCalendar(props) {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-    </>
+    </ScrollView>
   );
 }
 
