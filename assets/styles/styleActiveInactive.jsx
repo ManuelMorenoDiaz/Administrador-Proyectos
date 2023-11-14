@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
   title:{
     fontSize: 23,
     fontWeight: 'bold',
+    textAlign:'center',
+    marginBottom:10
   }
   ,
   item: {
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 10
   },
   modalOpciones: {
     backgroundColor: 'white',

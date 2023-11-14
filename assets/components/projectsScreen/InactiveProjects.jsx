@@ -72,7 +72,7 @@ const InactivosProjects = () => {
                     name={activeState[`inactivos${index}`] ? 'chevron-up' : 'chevron-down'}
                     type="font-awesome"
                     color={'white'}
-                    style={{ marginRight: 10 }}
+                    style={{ marginRight: 10}}
                   />
                 </View>
               </View>

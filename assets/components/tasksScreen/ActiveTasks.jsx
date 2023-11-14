@@ -11,6 +11,7 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 
 const ActiveTasks = () => {
+
   const {
     errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
     showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
@@ -35,18 +36,18 @@ const ActiveTasks = () => {
         : 'http://tu_direccion_de_servidor:3000/api/tasks/';
   }
 
-  useEffect(() => {
-    const fetchActiveTasks = async () => {
-      try {
-        const response = await axios.get(API_URL);
-        setActiveTasks(response.data);
-      } catch (error) {
-        console.error('Error al obtener tareas activas:', error);
-      }
-    };
+    useEffect(() => {
+      const fetchActiveTasks = async () => {
+        try {
+          const response = await axios.get(API_URL);
+          setActiveTasks(response.data);
+        } catch (error) {
+          console.error('Error al obtener tareas activas:', error);
+        }
+      };
 
-    fetchActiveTasks();
-  }, []);
+      fetchActiveTasks();
+    }, []);
 
   const toggleAccordion = (taskId) => {
     setActiveState((prevState) => ({
@@ -192,5 +193,6 @@ const ActiveTasks = () => {
     </View>
   );
 };
+
 
 export default ActiveTasks;

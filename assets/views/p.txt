@@ -1,0 +1,258 @@
+import React, { useState, useEffect } from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import CalendarHeader from '../components/calendarScreen/CenterCalendar';
+import styles from '../styles/stylesCalendar';
+import { Platform } from 'react-native';
+import axios from 'axios';
+
+function MyCalendar(props) {
+  let baseURL;
+  if (Platform.OS === 'web') {
+    baseURL = 'http://localhost:3000';
+  } else {
+    baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://tu_direccion_de_servidor:3000';
+  }
+
+  const [projects, setProjects] = useState([]);
+  const [dependentTasks, setDependentTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
+
+  const URLProjects = `${baseURL}/api/projects`;
+  const URLDependentTasks = `${baseURL}/api/dependent_tasks`;
+  const URLTasks = `${baseURL}/api/tasks`;
+
+  const [marked, setMarked] = useState({});
+
+  useEffect(() => {
+    axios.get(URLProjects)
+      .then(response => {
+        if (response.status === 200) {
+          setProjects(response.data);
+          console.log("Proyectos: ", response.data);
+
+          // Marcar fechas en función de los proyectos
+          const markedDates = { ...marked };
+          response.data.forEach(project => {
+            markedDates[project.fecha_inicio] = { marked: true, dots: [{ color: 'color_de_proyecto' }] };
+            markedDates[project.fecha_fin] = { marked: true, dots: [{ color: 'color_de_proyecto' }] };
+          });
+          setMarked(markedDates);
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la solicitud de proyectos:', error);
+      });
+  }, []);
+
+  
+
+  useEffect(() => {
+    axios.get(URLDependentTasks)
+      .then(response => {
+        if (response.status === 200) {
+          setDependentTasks(response.data);
+          console.log("Tareas Dependientes: ", response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la solicitud de tareas dependientes:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get(URLTasks)
+      .then(response => {
+        if (response.status === 200) {
+          setTasks(response.data);
+          console.log("Tareas: ", response.data);
+        }
+      })
+      .catch(error => {
+        console.error('Error al realizar la solicitud de tareas:', error);
+      });
+  }, []);
+
+  const projectData = {};
+
+  projects.forEach(project => {
+    projectData[project._id] = {
+      projectData: project,
+      tasks: {
+        "Por hacer": [],
+        "En progreso": [],
+        "Hecho": [],
+      },
+    };
+  });
+
+  dependentTasks.forEach(task => {
+    const projectId = task.proyecto_id;
+    const status = task.estatus;
+    if (projectData[projectId] && projectData[projectId].tasks[status]) {
+      projectData[projectId].tasks[status].push(task);
+    }
+  });
+
+
+  // Define cómo marcar las fechas en el calendario según la cantidad de tareas
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [selectedEventType, setSelectedEventType] = useState(null);
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const dayCustomStyle = (date) => {
+    const dots = marked[date]?.dots || [];
+
+    let backgroundColor = 'transparent';
+
+    if (dots.length === 1) {
+      backgroundColor = dots[0].color;
+    } else if (dots.length > 1) {
+      backgroundColor = 'yellow'; // Cambiar el color a verde para múltiples eventos
+    }
+
+    return {
+      container: {
+        backgroundColor,
+        borderRadius: 5,
+        height: 36, // Ajustar el tamaño del círculo
+        width: 36, // Ajustar el tamaño del círculo
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    };
+  };
+
+  const openModal = (events, eventType) => {
+    setSelectedEvents(events);
+    setSelectedEventType(eventType);
+    setModalVisible(true);
+  };
+
+  return (
+    <>
+      <Calendar
+        current={'2023-10-01'}
+        minDate={'2023-10-01'}
+        maxDate={'2024-10-31'}
+        markedDates={marked} // Asigna el objeto marked al componente Calendar
+        style={{ margin: 20, borderRadius: 10 }}
+        disableAllTouchEventsForDisabledDays={true}
+        dayComponent={({ date }) => (
+          <TouchableOpacity
+            style={[styles.dayContainer, dayCustomStyle(date.dateString).container]}
+            onPress={() => {
+              const events = eventos.filter((e) => e.start === date.dateString);
+              if (events.length > 0) {
+                openModal(events, events[0].type);
+              }
+            }}
+          >
+            <Text style={[styles.dayText, dayCustomStyle(date.dateString).text]}>
+              {date.day}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {...props}
+      />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                {selectedEvents.length > 1 ? (
+                  // Mostrar solo título y fecha de finalización cuando hay múltiples eventos
+                  selectedEvents.map((event) => {
+                    const backgroundColor = event.color;
+                    return (
+                      <View key={event.id} style={{ backgroundColor, marginTop: 10, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.modalTitle}>{event.title}</Text>
+                        <Text style={{ fontSize: 15 }}>
+                          Fecha de Finalización: {event.end}
+                        </Text>
+                      </View>
+                    );
+                  })
+                ) : (
+                  // Mostrar detalles completos cuando hay un solo evento o eventos de diferentes tipos
+                  selectedEvents.map((event) => {
+                    const backgroundColor = event.color;
+                    return (
+                      <View key={event.id} >
+                        <Text style={styles.modalTitle}>{event.title}</Text>
+                        <Text style={{ fontSize: 15 }}>Fecha: {event.start}</Text>
+                        <Text style={styles.h3}>Descripción</Text>
+                        <Text style={styles.modalDescription}>{event.description}</Text>
+                        {event.type === 'project' && (
+                          <>
+                            <View>
+                              <Text style={styles.h3}>Por Hacer</Text>
+                              {projectData[event.id]?.tasks["Por hacer"].map((task) => (
+                                <View key={task._id} style={styles.targTask}>
+                                  <Text style={{ color: '#5969FF', fontSize: 15 }}>{task.title}</Text>
+                                  <Text>{task.responsable}</Text>
+                                </View>
+                              ))}
+                            </View>
+                            <View>
+                              <Text style={styles.h3}>En Progreso</Text>
+                              {projectData[event.id]?.tasks["En progreso"].map((task) => (
+                                <View key={task._id} style={styles.targTask}>
+                                  <Text style={{ color: '#5969FF', fontSize: 15 }}>{task.title}</Text>
+                                  <Text>{task.responsable}</Text>
+                                </View>
+                              ))}
+                            </View>
+                            <View>
+                              <Text style={styles.h3}>Hecho</Text>
+                              {projectData[event.id]?.tasks["Hecho"].map((task) => (
+                                <View key={task._id} style={styles.targTask}>
+                                  <Text style={{ color: '#5969FF', fontSize: 15 }}>{task.title}</Text>
+                                  <Text>{task.responsable}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          </>
+                        )}
+                      </View>
+                    );
+                  })
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </>
+  );
+}
+
+const CalendarScreen = () => {
+  return (
+    <View style={styles.container}>
+      <CalendarHeader />
+      <MyCalendar />
+    </View>
+  );
+};
+
+export default CalendarScreen;

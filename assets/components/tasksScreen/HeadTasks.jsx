@@ -11,7 +11,7 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 import stylesI from '../../styles/stylesI';
 
-const HeadTasks = () => {
+const HeadTasks = (props) => {
   const {
     errorModalVisible, infoModalVisible, successModalVisible, questionModalVisible,
     showErrorAlert, showInfoAlert, showSuccessAlert, showQuestionAlert,
@@ -78,11 +78,10 @@ const HeadTasks = () => {
           setFechaInicio('');
           setDescripcion('');
           toggleModal2();
-
         }
       })
       .catch((error) => {
-        console.error('Error al crear la traea:', error);
+        console.error('Error al crear la tarea:', error);
         showErrorAlert();
       });
   };
@@ -90,8 +89,8 @@ const HeadTasks = () => {
   return (
     <View style={stylesHead.headProjects}>
       <View style={stylesHead.options}>
-        <TouchableOpacity style={stylesHead.addButton} onPress={toggleModal2}>
-          <Text style={stylesHead.addButtonText}>+</Text>
+        <TouchableOpacity style={[stylesHead.addButton, { borderRadius: props.radio }]} onPress={toggleModal2}>
+          <Text style={stylesHead.addButtonText}>{props.nom}</Text>
         </TouchableOpacity>
         <Modal
           isVisible={Modal2Visible}
